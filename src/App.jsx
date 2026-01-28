@@ -1,11 +1,11 @@
-
+import Navbar from "./Componentes/Navbar";
 import './App.css'
 
 function App() {
 
   return (
     <>
-     <h1>Probando 123</h1>
+     <Navbar />
     </>
   )
 }
