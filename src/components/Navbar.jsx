@@ -1,25 +1,28 @@
 import { useState } from "react";
 import logo from "../assets/icono-logo.svg";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function Navbar() {
+const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <nav className="bg-[#FEFEFE] shadow-sm">
+    <nav className="bg-[#FEFEFE] shadow-sm fixed top-0 left-0 w-full z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 ">
           
           {/* Logo */}
           <div className="shrink-0">
-            <img src={logo} alt="Logo" className="h-5 w-auto" />
+            <img src={logo} alt="Logo" className="h-5 w-auto cursor-pointer" onClick={() => navigate("/")}  />
           </div>
 
           {/* Menú de escritorio */}
           <div className="hidden md:flex items-center ml-auto space-x-6">
-            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Inicio</a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Especialidades</a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Portal Profesional</a>
-            <a href="#" className="text-gray-700 hover:text-gray-900 font-medium">Contacto</a>
+            <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium">Inicio</Link>
+            <Link to="/buscar-profesional" className="text-gray-700 hover:text-gray-900 font-medium">Profesionales</Link>
+            <Link to="#" className="text-gray-700 hover:text-gray-900 font-medium">Portal Profesional</Link>
+            <Link to="#" className="text-gray-700 hover:text-gray-900 font-medium">Contacto</Link>
           </div>
 
           {/* Botón ingresar */}
@@ -36,9 +39,9 @@ export default function Navbar() {
               className="focus:outline-none text-gray-700"
             >
               {isOpen ? (
-                <span className="text-2xl">&#10005;</span> // X
+                <span className="text-2xl">&#10005;</span> 
               ) : (
-                <span className="text-2xl">&#9776;</span> // ☰
+                <span className="text-2xl">&#9776;</span> 
               )}
             </button>
           </div>
@@ -48,10 +51,10 @@ export default function Navbar() {
       {/* Menú móvil */}
       {isOpen && (
         <div className="md:hidden bg-[#FEFEFE] px-4 pt-2 pb-4 space-y-2 shadow-sm">
-          <a href="#" className="block text-gray-700 hover:text-gray-900">Inicio</a>
-          <a href="#" className="block text-gray-700 hover:text-gray-900">Servicios</a>
-          <a href="#" className="block text-gray-700 hover:text-gray-900">Nosotros</a>
-          <a href="#" className="block text-gray-700 hover:text-gray-900">Contacto</a>
+          <Link to="/" className="block text-gray-700 hover:text-gray-900">Inicio</Link>
+          <Link to="/buscar-profesional" className="block text-gray-700 hover:text-gray-900">Profesionales</Link>
+          <Link to="#" className="block text-gray-700 hover:text-gray-900">Portal Profesional</Link>
+          <Link to="#" className="block text-gray-700 hover:text-gray-900">Contacto</Link>
           <button className="w-full bg-[#1878D5] text-white px-4 py-2 rounded-md hover:bg-[#1063a1] transition">
             Ingresar
           </button>
@@ -60,3 +63,5 @@ export default function Navbar() {
     </nav>
   );
 }
+
+export default NavBar;
