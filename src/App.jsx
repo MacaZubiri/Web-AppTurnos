@@ -1,4 +1,4 @@
-import Navbar from "./components/Navbar";
+
 import './App.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -6,23 +6,24 @@ import Profesionales from "./pages/BuscarProfesional";
 import Perfil from "./pages/Perfil";
 import PerfilProfesional from "./pages/PerfilProfesional";
 import ReservarTurno from "./pages/ReservarTurno";
+import Layout from "./Layout";
+
 
 
 function App() {
-
   return (
-  <BrowserRouter>
-      <Navbar />
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/buscar-profesional" element={<Profesionales />} />
-        <Route path="/perfil" element={<Perfil />} />
-        <Route path="/perfil-profesional" element={<PerfilProfesional />} />
-        <Route path="/reservar-turno" element={<ReservarTurno />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/buscar-profesional" element={<Profesionales />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/perfil-profesional" element={<PerfilProfesional />} />
+          <Route path="/reservar-turno" element={<ReservarTurno />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
 }
 
-
-export default App
+export default App;

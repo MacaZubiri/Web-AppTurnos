@@ -2,8 +2,7 @@ const profesionales = [
   // ------------------- DENTISTAS -------------------
   {
     id: 1,
-    nombre: "Ana",
-    apellido: "García",
+    nombre: "Ana García",
     especialidad: "Odontología General",
     sobreMi: "Odontóloga dedicada a tratamientos integrales para todas las edades.",
     diasAtencion: ["Lunes", "Miércoles", "Viernes"],
@@ -20,8 +19,7 @@ const profesionales = [
   },
   {
     id: 2,
-    nombre: "María",
-    apellido: "López",
+    nombre: "MaríaLópez",
     especialidad: "Odontología Pediátrica",
     sobreMi: "Especializada en ortodoncia infantil, me encanta trabajar con niños y familias.",
     diasAtencion: ["Martes","Jueves"],
@@ -39,8 +37,7 @@ const profesionales = [
   // ------------------- MEDICOS CLINICOS -------------------
   {
     id: 3,
-    nombre: "Juan",
-    apellido: "Pérez",
+    nombre: "Juan Pérez",
     especialidad: "Medicina Clínica",
     sobreMi: "Médico clínico con experiencia en diagnóstico y seguimiento de enfermedades crónicas.",
     diasAtencion: ["Lunes","Miércoles","Viernes"],
@@ -57,8 +54,7 @@ const profesionales = [
   },
   {
     id: 4,
-    nombre: "Lucía",
-    apellido: "Fernández",
+    nombre: "Lucía Fernández",
     especialidad: "Medicina Clínica",
     sobreMi: "Prevención y cuidado integral del adulto, enfocada en salud preventiva.",
     diasAtencion: ["Martes","Jueves"],
@@ -76,8 +72,7 @@ const profesionales = [
   // ------------------- TRAUMATOLOGOS -------------------
   {
     id: 5,
-    nombre: "Carlos",
-    apellido: "Gómez",
+    nombre: "Carlos Gómez",
     especialidad: "Traumatología",
     sobreMi: "Traumatólogo con experiencia en lesiones deportivas y ortopedia general.",
     diasAtencion: ["Lunes","Miércoles"],
@@ -93,8 +88,7 @@ const profesionales = [
   },
   {
     id: 6,
-    nombre: "Sofía",
-    apellido: "Ramírez",
+    nombre: "Sofía Ramírez",
     especialidad: "Traumatología",
     sobreMi: "Especializada en lesiones de extremidades y rehabilitación postquirúrgica.",
     diasAtencion: ["Martes","Jueves","Viernes"],
