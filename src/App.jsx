@@ -18,8 +18,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/buscar-profesional" element={<Profesionales />} />
           <Route path="/perfil" element={<Perfil />} />
-          <Route path="/perfil-profesional" element={<PerfilProfesional />} />
           <Route path="/reservar-turno" element={<ReservarTurno />} />
+          <Route path="/perfil-profesional/:id" element={<PerfilProfesional />} />
+          <Route path="/reservar-turno/:id" element={<ReservarTurno />} />
         </Route>
       </Routes>
     </BrowserRouter>

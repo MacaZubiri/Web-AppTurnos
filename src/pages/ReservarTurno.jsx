@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import profesionalesData from "../Data/Profesionales.js";
+import { useParams } from "react-router-dom";
 
 const ReservarTurno = () => {
+  const { id } = useParams();
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
@@ -45,8 +47,24 @@ const ReservarTurno = () => {
     );
   };
 
+  useEffect(() => {
+  if (id) {
+    const profesionalEncontrado = profesionalesData.find(
+      (p) => p.id === Number(id)
+    );
+
+    if (profesionalEncontrado) {
+      setSelected(profesionalEncontrado);
+    }
+  }
+}, [id]);
+  
+
+
+
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto">
+      <h1 className="text-center text-2xl font-bold mb-4">Reservar Turno</h1>
       {/* Selección de profesional */}
       <div className="flex flex-row items-center gap-4 w-full">
         <h2 className="font-medium">Seleccionar un profesional:</h2>
