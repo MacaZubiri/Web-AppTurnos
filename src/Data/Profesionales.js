@@ -19,7 +19,7 @@ const profesionales = [
   },
   {
     id: 2,
-    nombre: "MaríaLópez",
+    nombre: "María López",
     especialidad: "Odontología Pediátrica",
     sobreMi: "Especializada en ortodoncia infantil, me encanta trabajar con niños y familias.",
     diasAtencion: ["Martes","Jueves"],
