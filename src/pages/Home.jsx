@@ -8,9 +8,9 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-screen px-4 sm:px-6 lg:px-8 2xl:pt-12">
+    <div className="flex mt-28 px-4 sm:px-6 lg:px-8 2xl:pt-10">
 
-      <div className="flex-1 flex flex-col pt-16 md:text-center"
+      <div className="flex-1 flex flex-col justify-center md:text-center"
       >
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-center">
           Encontrá al profesional que necesitás
