@@ -51,14 +51,12 @@ const NavBar = ({ user, onLoginClick, onLogout }) => {
           {/* Menú de escritorio */}
           <div className="hidden md:flex items-center ml-auto space-x-6">
             <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium">Inicio</Link>
-            <Link to="/buscar-profesional" className="text-gray-700 hover:text-gray-900 font-medium ">Profesionales</Link>
+            <Link to="/buscar-profesional" className="text-gray-700 hover:text-gray-900 font-medium ${!user.isLogged ? mr-8 ">Profesionales</Link>
 
             {user.isLogged && user.role === "profesional" && (
               <Link to="/portal" className="text-gray-700 hover:text-gray-900 font-medium">Portal Profesional</Link>
             )}
-            {user.isLogged && user.role === "usuario" && (
-              <Link to="/mis-turnos" className="text-gray-700 hover:text-gray-900 font-medium mr-8">Mis turnos</Link>
-            )}
+            
           </div>
 
           {/* Botón Ingresar o Avatar */}
@@ -92,6 +90,14 @@ const NavBar = ({ user, onLoginClick, onLogout }) => {
         >
           Mi perfil
         </button>
+
+        <button
+          onClick={() => { navigate("/mis-turnos"); toggleMenu(); }}
+          className="px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
+        >
+          Mis Turnos
+        </button>
+
         <button
           onClick={() => { onLogout(); toggleMenu(); }}
           className="px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
@@ -129,6 +135,8 @@ const NavBar = ({ user, onLoginClick, onLogout }) => {
               >
                 Salir
               </button>
+
+              
             ) : (
               <button
                 onClick={onLoginClick}
@@ -136,6 +144,8 @@ const NavBar = ({ user, onLoginClick, onLogout }) => {
               >
                 Ingresar
               </button>
+
+              
             )}
           </div>
         )}
