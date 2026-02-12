@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react"; // <- agregamos useEffect
 import { useAuth } from "../context/AuthContext";
 import { FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const LoginModal = ({ isOpen, onClose }) => {
   const { login } = useAuth();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const closeRef = useRef(null);
 
@@ -34,6 +36,13 @@ const LoginModal = ({ isOpen, onClose }) => {
       setError("Usuario o contraseña incorrectos");
     }
   };
+
+  const handleRegister = () => {
+    onClose();            // 🔥 cierra el modal
+    navigate("/registro"); // 👉 redirige
+  };
+
+  
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -85,7 +94,7 @@ const LoginModal = ({ isOpen, onClose }) => {
           <button
             type="button"
             className="hover:underline"
-            onClick={() => alert("Registrar usuario")}
+            onClick={handleRegister}
           >
             Registrarse
           </button>
