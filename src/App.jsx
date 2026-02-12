@@ -6,27 +6,29 @@ import Profesionales from "./pages/BuscarProfesional";
 import Perfil from "./pages/Perfil";
 import PerfilProfesional from "./pages/PerfilProfesional";
 import ReservarTurno from "./pages/ReservarTurno";
-import Layout from "./Layout";
 import MisTurnos from "./pages/MisTurnos";
+import { AuthProvider } from './context/AuthContext';
+import NavBar from './components/Navbar';
 
 
 
 function App() {
  
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="/buscar-profesional" element={<Profesionales />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/reservar-turno" element={<ReservarTurno />} />
-          <Route path="/perfil-profesional/:id" element={<PerfilProfesional />} />
-          <Route path="/reservar-turno/:id" element={<ReservarTurno />} />
-          <Route path="/mis-turnos" element={<MisTurnos/>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+      <NavBar/>
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/buscar-profesional" element={<Profesionales />} />
+            <Route path="/perfil" element={<Perfil />} />
+            <Route path="/reservar-turno" element={<ReservarTurno />} />
+            <Route path="/perfil-profesional/:id" element={<PerfilProfesional />} />
+            <Route path="/reservar-turno/:id" element={<ReservarTurno />} />
+            <Route path="/mis-turnos" element={<MisTurnos/>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

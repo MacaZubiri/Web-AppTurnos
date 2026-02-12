@@ -1,4 +1,4 @@
-import imagenPerfil from '../assets/imagen-perfil.jpg';
+
 import { MdPhone, MdEmail, MdCreditCard } from "react-icons/md";
 
 const Perfil = () => {
@@ -8,13 +8,7 @@ const Perfil = () => {
   {/* Contenedor principal: imagen + datos + span */}
   <div className="flex gap-8">
 
-    {/* Imagen */}
-    <img
-      src={imagenPerfil}
-      alt="Imagen de perfil"
-      className="w-40 h-40 rounded-full object-cover mt-9 ml-9"
-    />
-
+  
     {/* Datos y botón juntos en un contenedor flex */}
     <div className="flex flex-1 justify-between mt-9">
       

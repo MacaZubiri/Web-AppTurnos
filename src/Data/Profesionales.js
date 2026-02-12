@@ -1,15 +1,15 @@
-import fotomedico1 from '../assets/imagenes-medicoclinico/dra-beatriz.jpg';
-import fotomedico2 from '../assets/imagenes-medicoclinico/dra-magdalena.jpg';
-import fotomedico3 from '../assets/imagenes-medicoclinico/dr-franco.jpg';
-import fotomedico4 from '../assets/imagenes-odontologos/dra-analia.jpg';
-import fotomedico5 from '../assets/imagenes-odontologos/dr-gerardo.jpg';
-import fotomedico6 from '../assets/imagenes-odontologos/dra-mariafernanda.jpg';
+import fotomedico1 from '../assets/imagenes-medicoclinico/beatriz.jpg';
+import fotomedico2 from '../assets/imagenes-medicoclinico/magdalena.jpg';
+import fotomedico3 from '../assets/imagenes-medicoclinico/franco.jpg';
+import fotomedico4 from '../assets/imagenes-odontologos/analia.jpg';
+import fotomedico5 from '../assets/imagenes-odontologos/gerardo.jpg';
+import fotomedico6 from '../assets/imagenes-odontologos/mariafernanda.jpg';
 
 const profesionales = [
   // ------------------- DENTISTAS -------------------
   {
     id: 1,
-    nombre: "Ana García",
+    nombre: "Beatriz García",
     especialidad: "Odontología General",
     imagen: fotomedico1,
     sobreMi: "Soy odontóloga general, dedicada a brindar una atención integral y personalizada, enfocada en la prevención, el diagnóstico y el tratamiento de la salud bucal. Mi objetivo es ofrecer soluciones adecuadas a cada paciente, cuidando tanto la funcionalidad como la estética de la sonrisa.Me caracterizo por un trato cercano y empático, priorizando la escucha y la explicación clara de cada procedimiento para generar confianza y tranquilidad. Busco que cada consulta sea una experiencia positiva, acompañando a mis pacientes en el cuidado de su salud bucal y en la adopción de hábitos saludables.",
@@ -21,12 +21,12 @@ const profesionales = [
     },
     obrasSociales: ["OSDE","Galeno","Medifé"],
     formacion: ["UBA - Odontología","Curso de Estética Dental", "Capacitación en Rehabilitación Dental y Prótesis", "Curso de Manejo de Pacientes y Atención Humanizada" ],
-    email: "ana.garcia@email.com",
+    email: "beatriz.garcia@email.com",
     telefono: "+54 11 1234-5678",
   },
   {
     id: 2,
-    nombre: "María López",
+    nombre: "Magdalena López",
     especialidad: "Odontología Pediátrica",
     imagen: fotomedico2,
     sobreMi: "Soy odontóloga especializada en odontología pediátrica, dedicada a brindar atención integral y cercana a los más pequeños. Mi enfoque combina la prevención, el cuidado de la salud bucal y la educación en hábitos saludables, buscando que cada niño tenga una experiencia positiva y libre de ansiedad en el consultorio.Me caracterizo por generar un ambiente cálido y de confianza, adaptando cada procedimiento a las necesidades y emociones de cada paciente. Trabajo junto a las familias para promover sonrisas saludables y hábitos que perduren toda la vida.",
@@ -61,7 +61,7 @@ const profesionales = [
   },
   {
     id: 4,
-    nombre: "Lucía Fernández",
+    nombre: "Analia Fernández",
     especialidad: "Medicina Clínica",
     imagen: fotomedico4,
     sobreMi: "Soy médica clínica dedicada a brindar atención integral y personalizada, enfocándome en la prevención, el diagnóstico y el tratamiento de enfermedades para cuidar la salud y el bienestar de mis pacientes, ofreciendo un seguimiento cercano durante todo el proceso. Me caracterizo por un trato empático y responsable, priorizando la escucha activa, la explicación clara de cada procedimiento y la promoción de hábitos saludables que favorezcan una vida equilibrada.",

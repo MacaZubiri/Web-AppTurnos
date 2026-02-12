@@ -1,156 +1,120 @@
 import { useState, useRef, useEffect } from "react";
-import logo from "../assets/icono-logo.svg";
-import perfilimagen from "../assets/imagen-perfil.jpg";
 import { Link, useNavigate } from "react-router-dom";
+import { FaBars } from "react-icons/fa";
 import { HiChevronDown } from "react-icons/hi";
+import { useAuth } from "../context/AuthContext";
+import logo from "../assets/icono-logo.svg";
+import LoginModal from "./LoginModal";
 
-const NavBar = ({ user, onLoginClick, onLogout }) => {
-
-
-  const [isOpen, setIsOpen] = useState(false); // menú móvil
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // menú desplegable avatar
-  const [showMenu, setShowMenu] = useState(false); // controla render del menú
+const NavBar = () => {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const menuRef = useRef(null);
+  const hamburgerRef = useRef(null);
 
-  // Función para abrir/cerrar el menú animado
-  const toggleMenu = () => {
-    if (!isMenuOpen) {
-      setShowMenu(true);
-      setTimeout(() => setIsMenuOpen(true), 10); // pequeño delay para animación
-    } else {
-      setIsMenuOpen(false);
-      setTimeout(() => setShowMenu(false), 200); // espera animación de cierre
-    }
-  };
+  const toggleHamburger = () => setIsHamburgerOpen(!isHamburgerOpen);
+  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  // Cerrar menú al click afuera
+  // Cerrar menús si clickeas afuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
-        setTimeout(() => setShowMenu(false), 200);
+      }
+      if (hamburgerRef.current && !hamburgerRef.current.contains(event.target)) {
+        setIsHamburgerOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   return (
-    <nav className="bg-[#FEFEFE] shadow-sm fixed top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <>
+      <nav className="bg-white shadow-sm fixed top-0 left-0 w-full z-50 h-12 flex items-center px-4 justify-between">
 
-          {/* Logo */}
-          <div className="shrink-0 cursor-pointer" onClick={() => navigate("/")}>
-            <img src={logo} alt="Logo" className="h-5 w-auto" />
-          </div>
-
-          {/* Menú de escritorio */}
-          <div className="hidden md:flex items-center ml-auto space-x-6">
-            <Link to="/" className="text-gray-700 hover:text-gray-900 font-medium">Inicio</Link>
-            <Link to="/buscar-profesional" className="text-gray-700 hover:text-gray-900 font-medium ${!user.isLogged ? mr-8 ">Profesionales</Link>
-
-            {user.isLogged && user.role === "profesional" && (
-              <Link to="/portal" className="text-gray-700 hover:text-gray-900 font-medium">Portal Profesional</Link>
-            )}
-            
-          </div>
-
-          {/* Botón Ingresar o Avatar */}
-          {!user.isLogged ? (
-            <button
-              onClick={onLoginClick}
-              className="bg-[#1878D5] text-white px-4 py-2 rounded-md hover:bg-[#1063a1] transition cursor-pointer"
-            >
-              Ingresar
-            </button>
-      ) : user.role === "usuario" ? (
-        <div ref={menuRef} className="flex items-center gap-2 relative">
-          {/* Avatar + Flecha */}
-          <div className="flex items-center gap-1 cursor-pointer" onClick={toggleMenu}>
-            <img src={perfilimagen} alt="Perfil" className="w-10 h-10 rounded-full" />
-            <HiChevronDown className={`w-4 h-4 text-gray-700 transition-transform duration-200 ${
-              isMenuOpen ? "rotate-180" : "rotate-0"
-            }`} />
-          </div>
-
-    {/* Menú desplegable */}
-    {showMenu && (
-      <div
-        className={`absolute right-0 mt-36 w-40 bg-white shadow-lg flex flex-col z-50
-          transform transition-all duration-400 ease-out
-          ${isMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-      >
-        <button
-          onClick={() => { navigate("/perfil"); toggleMenu(); }}
-          className="px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
-        >
-          Mi perfil
-        </button>
-
-        <button
-          onClick={() => { navigate("/mis-turnos"); toggleMenu(); }}
-          className="px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
-        >
-          Mis Turnos
-        </button>
-
-        <button
-          onClick={() => { onLogout(); toggleMenu(); }}
-          className="px-4 py-2 hover:bg-gray-100 text-left cursor-pointer"
-        >
-          Cerrar sesión
-        </button>
-      </div>
-    )}
-  </div>
-) : null}
-
-          {/* Botón menú móvil */}
-          <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="focus:outline-none text-gray-700">
-              {isOpen ? <span className="text-2xl">&#10005;</span> : <span className="text-2xl">&#9776;</span>}
-            </button>
-          </div>
+        {/* Logo */}
+        <div className="cursor-pointer" onClick={() => navigate("/")}>
+          <img src={logo} alt="Logo" className="h-4" />
         </div>
 
-        {/* Menú móvil */}
-        {isOpen && (
-          <div className="md:hidden bg-[#FEFEFE] px-4 pt-2 pb-4 space-y-2 shadow-sm">
-            <Link to="/" className="block text-gray-700 hover:text-gray-900">Inicio</Link>
-            <Link to="/buscar-profesional" className="block text-gray-700 hover:text-gray-900">Profesionales</Link>
+        {/* Links desktop */}
+        <div className="hidden sm:flex flex-1 justify-center gap-4">
+          <Link to="/" className="hover:text-gray-700 font-medium transition-colors">Inicio</Link>
+          <Link to="/buscar-profesional" className="hover:text-gray-700 font-medium transition-colors">Profesionales</Link>
+        </div>
 
-            {user.isLogged && user.role === "profesional" && (
-              <Link to="/portal" className="block text-gray-700 hover:text-gray-900">Portal Profesional</Link>
-            )}
+        {/* Right side: login / avatar + hamburger */}
+        <div className="flex items-center gap-4">
 
-
-            {user.isLogged ? (
-              <button
-                onClick={onLogout}
-                className="w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
-              >
-                Salir
-              </button>
-
-              
+          {/* Desktop: avatar / login */}
+          <div className="hidden sm:flex items-center gap-2 relative" ref={menuRef}>
+            {user ? (
+              <div className="flex items-center gap-2 cursor-pointer" onClick={toggleMenu}>
+                <p className="text-sm font-medium">{user.nombreApellido}</p> {/* <--- nombre siempre visible */}
+                <HiChevronDown className={`w-5 h-5 transition-transform ${isMenuOpen ? "rotate-180" : "rotate-0"}`} />
+              </div>
             ) : (
               <button
-                onClick={onLoginClick}
-                className="w-full bg-[#1878D5] text-white px-4 py-2 rounded-md hover:bg-[#1063a1] transition"
+                onClick={() => setIsLoginOpen(true)}
+                className="bg-blue-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-blue-600 transition-colors"
               >
                 Ingresar
               </button>
+            )}
 
-              
+             {/* Menú desplegable del avatar */}
+            {isMenuOpen && user && (
+              <div className="absolute top-12 right-0 w-40 bg-white shadow-lg flex flex-col z-50">
+                <button onClick={() => { navigate("/perfil"); setIsMenuOpen(false); }} className="px-4 py-2 text-left hover:bg-gray-100 cursor-pointer">Mi perfil</button>
+                <button onClick={() => { navigate("/mis-turnos"); setIsMenuOpen(false); }} className="px-4 py-2 text-left hover:bg-gray-100 cursor-pointer">Mis turnos</button>
+                <button onClick={() => { logout(); setIsMenuOpen(false); }} className="px-4 py-2 text-left hover:bg-gray-100 text-red-500 font-medium cursor-pointer">Cerrar sesión</button>
+              </div>
             )}
           </div>
-        )}
-      </div>
-    </nav>
+
+          {/* Mobile: nombre + hamburger */}
+          {user && (
+            <p className="sm:hidden text-md font-medium">{user.nombreApellido}</p> // <-- nombre al lado del hamburger
+          )}
+          <div className="sm:hidden relative" ref={hamburgerRef}>
+            <FaBars onClick={toggleHamburger} className="text-2xl cursor-pointer" />
+            {isHamburgerOpen && (
+              <div className="absolute top-full right-0 w-56 bg-white shadow-lg flex flex-col p-2 z-50">
+                <Link to="/" onClick={() => setIsHamburgerOpen(false)} className="px-4 py-2 hover:bg-gray-100 rounded">Inicio</Link>
+                <Link to="/buscar-profesional" onClick={() => setIsHamburgerOpen(false)} className="px-4 py-2 hover:bg-gray-100 rounded">Profesionales</Link>
+
+                {user ? (
+                  <>
+                    <button onClick={() => { navigate("/perfil"); setIsHamburgerOpen(false); }} className="px-4 py-2 text-left hover:bg-gray-100">Mi perfil</button>
+                    <button onClick={() => { navigate("/mis-turnos"); setIsHamburgerOpen(false); }} className="px-4 py-2 text-left hover:bg-gray-100">Mis turnos</button>
+                    <button onClick={() => { logout(); setIsHamburgerOpen(false); }} className="px-4 py-2 text-left hover:bg-gray-100 text-red-600 font-medium">Cerrar sesión</button>
+                  </>
+                ) : (
+                  <button onClick={() => { setIsLoginOpen(true); setIsHamburgerOpen(false); }} className="px-4 py-2 text-left bg-blue-500 text-white rounded-sm font-medium hover:bg-blue-600 transition-colors">Ingresar</button>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Si no hay usuario en mobile */}
+          {!user && (
+            <button onClick={() => setIsLoginOpen(true)} className="sm:hidden bg-blue-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-blue-600 transition-colors">
+              Ingresar
+            </button>
+          )}
+
+        </div>
+      </nav>
+
+      {/* Modal de login */}
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+    </>
   );
 };
 
