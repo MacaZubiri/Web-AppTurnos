@@ -37,7 +37,7 @@ const NavBar = () => {
   return (
     <>
       <nav className="bg-white shadow-sm fixed top-0 left-0 w-full z-50 h-12 flex items-center px-4 justify-between">
-
+        
         {/* Logo */}
         <div className="cursor-pointer" onClick={() => navigate("/")}>
           <img src={logo} alt="Logo" className="h-4" />
@@ -49,14 +49,14 @@ const NavBar = () => {
           <Link to="/buscar-profesional" className="hover:text-gray-700 font-medium transition-colors">Profesionales</Link>
         </div>
 
-        {/* Right side: login / avatar + hamburger */}
+        {/* Right side */}
         <div className="flex items-center gap-4">
 
           {/* Desktop: avatar / login */}
           <div className="hidden sm:flex items-center gap-2 relative" ref={menuRef}>
             {user ? (
               <div className="flex items-center gap-2 cursor-pointer" onClick={toggleMenu}>
-                <p className="text-sm font-medium">{user.nombreApellido}</p> {/* <--- nombre siempre visible */}
+                <p className="text-sm font-medium">{user.nombreApellido}</p>
                 <HiChevronDown className={`w-5 h-5 transition-transform ${isMenuOpen ? "rotate-180" : "rotate-0"}`} />
               </div>
             ) : (
@@ -68,7 +68,7 @@ const NavBar = () => {
               </button>
             )}
 
-             {/* Menú desplegable del avatar */}
+            {/* Menú desplegable avatar */}
             {isMenuOpen && user && (
               <div className="absolute top-12 right-0 w-40 bg-white shadow-lg flex flex-col z-50">
                 <button onClick={() => { navigate("/perfil"); setIsMenuOpen(false); }} className="px-4 py-2 text-left hover:bg-gray-100 cursor-pointer">Mi perfil</button>
@@ -80,7 +80,7 @@ const NavBar = () => {
 
           {/* Mobile: nombre + hamburger */}
           {user && (
-            <p className="sm:hidden text-md font-medium">{user.nombreApellido}</p> // <-- nombre al lado del hamburger
+            <p className="sm:hidden text-md font-medium">{user.nombreApellido}</p>
           )}
           <div className="sm:hidden relative" ref={hamburgerRef}>
             <FaBars onClick={toggleHamburger} className="text-2xl cursor-pointer" />
@@ -101,13 +101,6 @@ const NavBar = () => {
               </div>
             )}
           </div>
-
-          {/* Si no hay usuario en mobile */}
-          {!user && (
-            <button onClick={() => setIsLoginOpen(true)} className="sm:hidden bg-blue-500 text-white px-3 py-1 rounded cursor-pointer hover:bg-blue-600 transition-colors">
-              Ingresar
-            </button>
-          )}
 
         </div>
       </nav>
