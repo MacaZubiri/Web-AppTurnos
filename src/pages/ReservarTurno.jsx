@@ -1,21 +1,47 @@
 import { useState, useEffect } from "react";
-import profesionalesData from "../Data/Profesionales.js";
 import { useParams } from "react-router-dom";
+import profesionalesData from "../Data/Profesionales.js";
+import { useAuth } from "../context/AuthContext";
 
 const ReservarTurno = () => {
   const { id } = useParams();
+  const { user } = useAuth(); // usuario logueado, puede ser null
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(null);
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
   const [turnosGuardados, setTurnosGuardados] = useState([]);
 
-  // Cargar turnos guardados desde localStorage
-  useEffect(() => {
-    const turnos = JSON.parse(localStorage.getItem("turnos")) || [];
-    setTurnosGuardados(turnos);
-  }, []);
+  const diasSemana = ["lunes", "martes", "miercoles", "jueves", "viernes"];
 
+  // Cargar turnos del usuario logueado (solo si hay user)
+  useEffect(() => {
+    if (!user) {
+      setTurnosGuardados([]);
+      return;
+    }
+
+    const turnosPorUsuario =
+      JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
+    setTurnosGuardados(turnosPorUsuario[user.id] || []);
+  }, [user]);
+
+  // Cargar profesional por ID
+  useEffect(() => {
+    if (id) {
+      const profesionalEncontrado = profesionalesData.find(
+        (p) => p.id === Number(id)
+      );
+      if (profesionalEncontrado) setSelected(profesionalEncontrado);
+    }
+  }, [id]);
+
+  // Confirmar turno
   const confirmarTurno = () => {
+    if (!user) {
+      alert("⚠️ Debes iniciar sesión para reservar un turno");
+      return;
+    }
+
     if (!horarioSeleccionado) {
       alert("Seleccioná un horario");
       return;
@@ -27,17 +53,40 @@ const ReservarTurno = () => {
       horario: horarioSeleccionado.hora,
     };
 
-    const turnosActualizados = [...turnosGuardados, nuevoTurno];
+    const turnosPorUsuario =
+      JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
+    const turnosUsuario = turnosPorUsuario[user.id] || [];
+    const turnosActualizados = [...turnosUsuario, nuevoTurno];
+
+    turnosPorUsuario[user.id] = turnosActualizados;
+    localStorage.setItem("turnosPorUsuario", JSON.stringify(turnosPorUsuario));
     setTurnosGuardados(turnosActualizados);
-    localStorage.setItem("turnos", JSON.stringify(turnosActualizados));
 
-    alert("Turno reservado con éxito ✅");
-
-    // reset selección
+    alert("✅ Turno reservado con éxito");
     setHorarioSeleccionado(null);
   };
 
-  // Función para saber si un horario está reservado
+  // Borrar turnos del usuario logueado
+  const resetearTurnos = () => {
+    if (!user) {
+      alert("No hay usuario logueado para borrar turnos");
+      return;
+    }
+    if (
+      window.confirm(
+        "¿Seguro que querés borrar todos tus turnos guardados?"
+      )
+    ) {
+      const turnosPorUsuario =
+        JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
+      turnosPorUsuario[user.id] = [];
+      localStorage.setItem("turnosPorUsuario", JSON.stringify(turnosPorUsuario));
+      setTurnosGuardados([]);
+      alert("✅ Tus turnos fueron borrados");
+    }
+  };
+
+  // Saber si un horario está reservado (solo por usuario actual)
   const estaReservado = (dia, hora) => {
     return turnosGuardados.some(
       (t) =>
@@ -47,28 +96,13 @@ const ReservarTurno = () => {
     );
   };
 
-  useEffect(() => {
-  if (id) {
-    const profesionalEncontrado = profesionalesData.find(
-      (p) => p.id === Number(id)
-    );
-
-    if (profesionalEncontrado) {
-      setSelected(profesionalEncontrado);
-    }
-  }
-}, [id]);
-  
-
-
-
   return (
-    <div className="flex flex-col items-center w-full max-w-md mx-auto">
-      <h1 className="text-center text-2xl font-bold mb-4">Reservar Turno</h1>
-      {/* Selección de profesional */}
-      <div className="flex flex-row items-center gap-4 w-full">
-        <h2 className="font-medium">Seleccionar un profesional:</h2>
+    <div className="pt-24 px-4 max-w-5xl mx-auto">
+      <h1 className="text-center text-2xl font-bold mb-6">Reservar Turno</h1>
 
+      {/* Selección de profesional */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 w-full mb-8">
+        <h2 className="font-medium">Seleccionar un profesional:</h2>
         <div className="relative flex-1">
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -97,78 +131,86 @@ const ReservarTurno = () => {
         </div>
       </div>
 
-      {/* Tabla de horarios */}
-      <div className="mt-6 text-center">
-        <table className="table-auto border border-gray-200 text-center w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="border px-8 py-2">Lunes</th>
-              <th className="border px-8 py-2">Martes</th>
-              <th className="border px-8 py-2">Miércoles</th>
-              <th className="border px-8 py-2">Jueves</th>
-              <th className="border px-8 py-2">Viernes</th>
-            </tr>
-          </thead>
-          <tbody>
-            {selected ? (
-              <tr>
-                {["lunes", "martes", "miercoles", "jueves", "viernes"].map(
-                  (dia) => {
-                    const horarios = selected.horariosAtencion[dia] || [];
-
-                    return (
-                      <td key={dia} className="border px-4 py-2">
-                        {horarios.length > 0
-                          ? horarios.map((hora) => {
-                              const reservado = estaReservado(dia, hora);
-                              const seleccionado =
-                                horarioSeleccionado?.dia === dia &&
-                                horarioSeleccionado?.hora === hora;
-
-                              return (
-                                <span
-                                  key={hora}
-                                  onClick={() =>
-                                    !reservado &&
-                                    setHorarioSeleccionado({ dia, hora })
-                                  }
-                                  className={`inline-block rounded px-3 py-1 mx-1 my-1 text-sm cursor-pointer
-                                    ${
-                                      reservado
-                                        ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                                        : seleccionado
-                                        ? "bg-green-600 text-white"
-                                        : "bg-blue-500 text-white hover:bg-blue-600"
-                                    }`}
-                                >
-                                  {hora}
-                                </span>
-                              );
-                            })
-                          : "—"}
-                      </td>
-                    );
-                  }
+      {/* Cards de horarios */}
+      {selected ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-24">
+          {diasSemana.map((dia) => {
+            const horarios = selected.horariosAtencion[dia] || [];
+            return (
+              <div
+                key={dia}
+                className="bg-white p-4 rounded-lg shadow-md flex flex-col"
+              >
+                <h3 className="font-semibold mb-2 capitalize">{dia}</h3>
+                {horarios.length > 0 ? (
+                  <div className="flex flex-wrap">
+                    {horarios.map((hora) => {
+                      const reservado = estaReservado(dia, hora);
+                      const seleccionado =
+                        horarioSeleccionado?.dia === dia &&
+                        horarioSeleccionado?.hora === hora;
+                      return (
+                        <span
+                          key={hora}
+                          onClick={() =>
+                            !reservado &&
+                            setHorarioSeleccionado({ dia, hora })
+                          }
+                          className={`inline-block rounded px-3 py-1 mx-1 my-1 text-sm cursor-pointer
+                            ${
+                              reservado
+                                ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                                : seleccionado
+                                ? "bg-green-600 text-white"
+                                : "bg-blue-500 text-white hover:bg-blue-600"
+                            }`}
+                        >
+                          {hora}
+                        </span>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-gray-500">—</p>
                 )}
-              </tr>
-            ) : (
-              <tr>
-                <td colSpan={5} className="border px-4 py-2">
-                  Seleccioná un profesional para ver los horarios
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="text-center text-gray-500 mb-24">
+          Seleccioná un profesional para ver los horarios
+        </p>
+      )}
 
-        {/* Botón confirmar */}
+      {/* Botón sticky mobile */}
+      <div className="sm:hidden fixed bottom-0 left-0 w-full bg-white p-4 shadow-md z-50">
         <button
           onClick={confirmarTurno}
           disabled={!horarioSeleccionado}
-          className=" cursor-pointer mt-4 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-medium py-2 px-12 rounded"
+          className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-medium py-3 rounded-lg transition"
         >
           Confirmar turno
         </button>
+      </div>
+
+      {/* Botón desktop */}
+      <div className="hidden sm:flex justify-center mb-4 gap-4">
+        <button
+          onClick={confirmarTurno}
+          disabled={!horarioSeleccionado}
+          className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-medium py-2 px-12 rounded transition"
+        >
+          Confirmar turno
+        </button>
+        {user && (
+          <button
+            onClick={resetearTurnos}
+            className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition"
+          >
+            Borrar mis turnos
+          </button>
+        )}
       </div>
     </div>
   );

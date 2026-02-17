@@ -26,6 +26,13 @@ export const AuthProvider = ({ children}) => {
         fetchUsuarios ();
     }, []);
 
+    useEffect(() => {
+  const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    setUser(JSON.parse(storedUser));
+  }
+}, []);
+
     
     const registerUser = async (userData) => {
     setLoading(true);
@@ -74,8 +81,27 @@ export const AuthProvider = ({ children}) => {
         localStorage.removeItem ("user");
     };
 
+    const updateUser = async (updatedData) => {
+  try {
+    const res = await fetch(`${API_URL}/${user.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+    const data = await res.json();
+
+    setUser(data);
+    localStorage.setItem("user", JSON.stringify(data));
+    return data;
+  } catch (err) {
+    console.error("Error actualizando usuario:", err);
+    throw err;
+  }
+};
+
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading, registerUser, error }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, registerUser, error, updateUser }}>
             {children}
         </AuthContext.Provider>
     )

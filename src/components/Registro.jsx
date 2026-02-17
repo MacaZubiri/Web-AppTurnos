@@ -100,7 +100,7 @@ const Register = () => {
         showConfirmButton: false,
       });
 
-      navigate("/dashboard"); // redirige al dashboard
+      navigate("/"); // redirige al dashboard
     } catch (err) {
       Swal.fire({
         icon: "error",
