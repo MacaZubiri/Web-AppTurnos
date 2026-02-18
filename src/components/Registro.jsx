@@ -1,96 +1,55 @@
-import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const schemaUsuario = z.object({
+  nombreApellido: z
+    .string()
+    .min(3, "El nombre debe tener al menos 3 caracteres"),
+  usuario: z.string().min(3, "El usuario debe tener al menos 3 caracteres"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  telefono: z.string().min(8, "Teléfono inválido"),
+  email: z.string().email("Email inválido"),
+  obraSocial: z.object({
+    nombre: z.string().min(2, "Debe ingresar el nombre de la obra social"),
+    numeroAfiliado: z.string().min(3, "Número de afiliado inválido"),
+  }),
+});
 
 const Register = () => {
   const { registerUser, loading, error, usuarios } = useAuth();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    nombreApellido: "",
-    usuario: "",
-    password: "",
-    telefono: "",
-    email: "",
-    obraSocial: {
-      nombre: "",
-      numeroAfiliado: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schemaUsuario),
+    defaultValues: {
+      nombreApellido: "",
+      usuario: "",
+      password: "",
+      telefono: "",
+      email: "",
+      obraSocial: { nombre: "", numeroAfiliado: "" },
     },
   });
 
-  // Manejo de cambios
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "obraSocialNombre") {
-      setFormData((prev) => ({
-        ...prev,
-        obraSocial: { ...prev.obraSocial, nombre: value },
-      }));
-    } else if (name === "obraSocialNumero") {
-      setFormData((prev) => ({
-        ...prev,
-        obraSocial: { ...prev.obraSocial, numeroAfiliado: value },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+  const onSubmit = async (data) => {
+    // Validar duplicados de usuario/email
+    if (usuarios?.find((u) => u.usuario === data.usuario)) {
+      return Swal.fire("Error", "El nombre de usuario ya existe", "error");
     }
-  };
-
-  // Validaciones
-  const validateForm = () => {
-    const { nombreApellido, usuario, email, password, telefono, obraSocial } = formData;
-
-    if (!nombreApellido || !usuario || !email || !password || !telefono || !obraSocial.nombre || !obraSocial.numeroAfiliado) {
-      Swal.fire("Error", "Todos los campos son obligatorios", "error");
-      return false;
+    if (usuarios?.find((u) => u.email === data.email)) {
+      return Swal.fire("Error", "El email ya está registrado", "error");
     }
-
-    // Validar email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      Swal.fire("Error", "El email no es válido", "error");
-      return false;
-    }
-
-    // Validar password (mínimo 6 caracteres)
-    if (password.length < 6) {
-      Swal.fire("Error", "La contraseña debe tener al menos 6 caracteres", "error");
-      return false;
-    }
-
-    // Validar teléfono
-    const telefonoRegex = /^[0-9\-]+$/;
-    if (!telefonoRegex.test(telefono)) {
-      Swal.fire("Error", "Número de teléfono no válido", "error");
-      return false;
-    }
-
-    // Validar duplicados
-    if (usuarios?.find(u => u.usuario === usuario)) {
-      Swal.fire("Error", "El nombre de usuario ya existe", "error");
-      return false;
-    }
-    if (usuarios?.find(u => u.email === email)) {
-      Swal.fire("Error", "El email ya está registrado", "error");
-      return false;
-    }
-
-    return true;
-  };
-
-  // Submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!validateForm()) return;
 
     try {
-      const usuarioRegistrado = await registerUser(formData);
+      const usuarioRegistrado = await registerUser(data);
 
       await Swal.fire({
         icon: "success",
@@ -113,86 +72,125 @@ const Register = () => {
   return (
     <div className="min-h-screen flex mt-20 justify-center p-4">
       <form
-        onSubmit={handleSubmit}
-        className=" flex flex-col w-full gap-6 lg:w-full lg:max-w-3/5 bg-gray-50 p-10 lg:flex lg:flex-col lg:gap-6 lg:mx-20"
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col w-full gap-6 lg:max-w-2xl bg-gray-50 p-10"
       >
-        <h2 className="text-3xl font-semibold text-center mb-4">
-          Registrarse
-        </h2>
+        <h2 className="text-3xl font-semibold text-center mb-4">Registrarse</h2>
 
-        <input
-          name="nombreApellido"
-          type="text"
-          placeholder="Nombre y apellido"
-          value={formData.nombreApellido}
-          onChange={handleChange}
-          className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-        />
-
-        <input
-          name="usuario"
-          type="text"
-          placeholder="Nombre de usuario"
-          value={formData.usuario}
-          onChange={handleChange}
-          className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-        />
-
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-        />
-
-        <input
-          name="telefono"
-          type="tel"
-          placeholder="Número de teléfono"
-          value={formData.telefono}
-          onChange={handleChange}
-          className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-        />
-
-        <input
-          name="password"
-          type="password"
-          placeholder="Contraseña"
-          value={formData.password}
-          onChange={handleChange}
-          className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
-        />
-
-        {/* Obra social: dos inputs al lado */}
-        <div className=" flex flex-col lg:flex gap-4">
+        {/* Nombre y apellido */}
+        <div className="flex flex-col">
           <input
-            name="obraSocialNombre"
             type="text"
-            placeholder="Nombre de la obra social"
-            value={formData.obraSocial.nombre}
-            onChange={handleChange}
-            className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+            placeholder="Nombre y apellido"
+            {...register("nombreApellido")}
+            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
           />
+          {errors.nombreApellido && (
+            <span className="text-red-500 text-sm mt-1">
+              {errors.nombreApellido.message}
+            </span>
+          )}
+        </div>
+
+        {/* Usuario */}
+        <div className="flex flex-col">
           <input
-            name="obraSocialNumero"
             type="text"
-            placeholder="Número de afiliado"
-            value={formData.obraSocial.numeroAfiliado}
-            onChange={handleChange}
-            className="flex-1 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+            placeholder="Nombre de usuario"
+            {...register("usuario")}
+            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
           />
+          {errors.usuario && (
+            <span className="text-red-500 text-sm mt-1">
+              {errors.usuario.message}
+            </span>
+          )}
+        </div>
+
+        {/* Email */}
+        <div className="flex flex-col">
+          <input
+            type="email"
+            placeholder="Email"
+            {...register("email")}
+            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+          />
+          {errors.email && (
+            <span className="text-red-500 text-sm mt-1">
+              {errors.email.message}
+            </span>
+          )}
+        </div>
+
+        {/* Teléfono */}
+        <div className="flex flex-col">
+          <input
+            type="tel"
+            placeholder="Número de teléfono"
+            {...register("telefono")}
+            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+          />
+          {errors.telefono && (
+            <span className="text-red-500 text-sm mt-1">
+              {errors.telefono.message}
+            </span>
+          )}
+        </div>
+
+        {/* Contraseña */}
+        <div className="flex flex-col">
+          <input
+            type="password"
+            placeholder="Contraseña"
+            {...register("password")}
+            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+          />
+          {errors.password && (
+            <span className="text-red-500 text-sm mt-1">
+              {errors.password.message}
+            </span>
+          )}
+        </div>
+
+        {/* Obra social */}
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 flex flex-col">
+            <input
+              type="text"
+              placeholder="Nombre de la obra social"
+              {...register("obraSocial.nombre")}
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+            />
+            {errors.obraSocial?.nombre && (
+              <span className="text-red-500 text-sm mt-1">
+                {errors.obraSocial.nombre.message}
+              </span>
+            )}
+          </div>
+
+          <div className="flex-1 flex flex-col">
+            <input
+              type="text"
+              placeholder="Número de afiliado"
+              {...register("obraSocial.numeroAfiliado")}
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+            />
+            {errors.obraSocial?.numeroAfiliado && (
+              <span className="text-red-500 text-sm mt-1">
+                {errors.obraSocial.numeroAfiliado.message}
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-center">
-            <button
+          <button
             type="submit"
             disabled={loading}
-            className="mt-4 bg-blue-600 text-white py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 cursor-pointer w-lg  "
-            >
+            className="mt-4 bg-blue-600 text-white py-3 rounded-md text-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 w-full lg:w-auto"
+          >
             {loading ? "Registrando..." : "Registrarse"}
-            </button>
+          </button>
         </div>
 
         {error && (

@@ -30,7 +30,7 @@ const PerfilProfesional = () => {
         <div className="flex flex-col md:flex-row md:items-start md:gap-6 w-full md:flex-1">
 
           {/* Imagen */}
-          <div className="flex-shrink-0 flex justify-center md:justify-start mb-4 md:mb-0">
+          <div className="shrink-0 flex justify-center md:justify-start mb-4 md:mb-0">
             <img
               src={profesional.imagen}
               alt={profesional.nombre}

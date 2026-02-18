@@ -1,6 +1,5 @@
 import iconocalendario from "../assets/iconos/icono-calendario.svg";
 import iconobuscarprofesional from "../assets/iconos/icono-buscarprofesional.svg";
-import imagenfondo from "../assets/imagen-fondo-inicio.svg";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -30,7 +29,7 @@ const Home = () => {
                        px-6 py-3
                        bg-blue-500 text-white rounded-lg
                        hover:bg-blue-600 transition
-                       text-base sm:text-lg"
+                       text-base sm:text-lg cursor-pointer"
           >
             <img
               src={iconocalendario}
@@ -47,7 +46,7 @@ const Home = () => {
                        px-6 py-3
                        border border-blue-500 text-blue-500 rounded-lg
                        hover:bg-blue-50 transition
-                       text-base sm:text-lg"
+                       text-base sm:text-lg cursor-pointer"
           >
             <img
               src={iconobuscarprofesional}

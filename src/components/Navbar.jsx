@@ -92,7 +92,7 @@ const NavBar = () => {
               ) : (
                 <button
                   onClick={() => setIsLoginOpen(true)}
-                  className="bg-blue-500 text-white px-4 py-1.5 rounded hover:bg-blue-600 transition-colors"
+                  className="bg-blue-500 text-white px-4 py-1.5 rounded hover:bg-blue-600 transition-colors cursor-pointer"
                 >
                   Ingresar
                 </button>
@@ -106,7 +106,7 @@ const NavBar = () => {
                       navigate("/perfil");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                   >
                     Mi perfil
                   </button>
@@ -116,7 +116,7 @@ const NavBar = () => {
                       navigate("/mis-turnos");
                       setIsMenuOpen(false);
                     }}
-                    className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 cursor-pointer"
                   >
                     Mis turnos
                   </button>
@@ -127,7 +127,7 @@ const NavBar = () => {
                       setIsMenuOpen(false);
                       navigate ("/");
                     }}
-                    className="w-full px-4 py-2 text-left hover:bg-gray-100 text-red-500 font-medium"
+                    className="w-full px-4 py-2 text-left hover:bg-gray-100 text-red-500 font-medium cursor-pointer"
                   >
                     Cerrar sesión
                   </button>
