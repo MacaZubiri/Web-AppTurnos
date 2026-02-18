@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-
-const estadosColores = {
-  confirmado: "bg-green-500 text-white",
-  cancelado: "bg-red-500 text-white",
-  ausente: "bg-yellow-400 text-black",
-  asistio: "bg-blue-500 text-white",
-};
+import {SwalWarning} from "../utils/swal";
 
 const MisTurnos = () => {
   const { user } = useAuth();
@@ -15,30 +9,34 @@ const MisTurnos = () => {
   // Cargar turnos del usuario
   useEffect(() => {
     if (!user) return;
-
-    const turnosPorUsuario =
-      JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
+    const turnosPorUsuario = JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
     setTurnos(turnosPorUsuario[user.id] || []);
   }, [user]);
 
-  // Cancelar turno: lo elimina y libera el horario
-  const cancelarTurno = (index) => {
+  // Cancelar turno
+  const cancelarTurno = async (index) => {
     if (!user) return;
-    if (!window.confirm("¿Querés cancelar este turno?")) return;
 
-    const turnosPorUsuario =
-      JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
-    const turnosUsuario = turnosPorUsuario[user.id] || [];
+    const result = await SwalWarning.fire({
+      title: "¿Estás seguro de que quieres cancelar este turno?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No, mantener",
+      reverseButtons: true,
+    });
 
-    // Eliminamos el turno del array
-    const turnosActualizados = turnosUsuario.filter((_, i) => i !== index);
+    if (result.isConfirmed) {
+      // Actualizamos localStorage y estado
+      const turnosPorUsuario = JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
+      const turnosUsuario = turnosPorUsuario[user.id] || [];
+      const turnosActualizados = turnosUsuario.filter((_, i) => i !== index);
+      turnosPorUsuario[user.id] = turnosActualizados;
+      localStorage.setItem("turnosPorUsuario", JSON.stringify(turnosPorUsuario));
+      setTurnos(turnosActualizados);
 
-    // Guardamos en localStorage y actualizamos estado
-    turnosPorUsuario[user.id] = turnosActualizados;
-    localStorage.setItem("turnosPorUsuario", JSON.stringify(turnosPorUsuario));
-    setTurnos(turnosActualizados);
-
-    alert("✅ Turno cancelado. Este horario ya está disponible para reservar.");
+      Swal.fire("Turno cancelado", "El turno fue eliminado correctamente", "success");
+    }
   };
 
   if (!user) {
@@ -69,29 +67,21 @@ const MisTurnos = () => {
             key={index}
             className="bg-white shadow-md rounded-lg p-4 flex flex-col gap-2"
           >
-            <h2 className="font-semibold text-lg">{turno.profesional.nombre}</h2>
+            <h2 className="font-semibold text-lg text-center mb-2">
+              Turno con Dr. {turno.profesional.nombre}
+            </h2>
             <p>
-              <span className="font-medium">Día:</span> {turno.dia}
+              <span className="font-medium">El día:</span> {turno.dia}
             </p>
             <p>
-              <span className="font-medium">Hora:</span> {turno.horario}
+              <span className="font-medium">A las:</span> {turno.horario} horas.
             </p>
 
-            {/* Estado */}
-            <span
-              className={`inline-block px-2 py-1 rounded text-sm font-medium ${
-                estadosColores[turno.estado || "confirmado"]
-              }`}
-            >
-              {turno.estado || "confirmado"}
-            </span>
-
-            {/* Botón cancelar */}
             <button
               onClick={() => cancelarTurno(index)}
-              className="mt-2 bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm transition"
+              className="mt-2 bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm transition cursor-pointer"
             >
-              Cancelar
+              Cancelar Turno
             </button>
           </div>
         ))}

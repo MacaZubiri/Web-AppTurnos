@@ -1,53 +1,88 @@
 import { useState } from "react";
 import { MdClose } from "react-icons/md";
 import { useAuth } from "../context/AuthContext";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SwalError, SwalSuccess } from "../utils/swal";
+import { IoEye, IoEyeOff } from "react-icons/io5";
+
+// Esquema de validación
+const schemaUsuario = z.object({
+  nombreApellido: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+  usuario: z.string().min(3, "El usuario debe tener al menos 3 caracteres"),
+  password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
+  telefono: z.string().min(8, "Teléfono inválido").optional(),
+  email: z.string().email("Email inválido"),
+  obraSocial: z.object({
+    nombre: z.string().min(2, "Debe ingresar el nombre de la obra social").optional().or(z.literal("")),
+    numeroAfiliado: z.string().min(3, "Número de afiliado inválido").optional().or(z.literal("")),
+  }),
+});
 
 const EditProfileModal = ({ user, onClose }) => {
-  const { updateUser } = useAuth();
-  const [formData, setFormData] = useState({
-    nombreApellido: user.nombreApellido || "",
-    email: user.email || "",
-    usuario: user.usuario || "",
-    password: user.password || "",
-    obraSocialNombre: user.obraSocial?.nombre || "",
-    obraSocialNumero: user.obraSocial?.numeroAfiliado || "",
+  const { updateUser, usuarios } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState(user.password || ""); // 🔹 contraseña por defecto
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setValue
+  } = useForm({
+    resolver: zodResolver(schemaUsuario),
+    defaultValues: {
+      nombreApellido: user.nombreApellido || "",
+      usuario: user.usuario || "",
+      password: password,
+      email: user.email || "",
+      telefono: user.telefono || "",
+      obraSocial: {
+        nombre: user.obraSocial?.nombre || "",
+        numeroAfiliado: user.obraSocial?.numeroAfiliado || "",
+      },
+    },
   });
 
-  const [loading, setLoading] = useState(false);
+  const onSubmit = async (data) => {
+    // Si el password no fue modificado, usar el valor del estado local
+    if (!data.password) data.password = password;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const updatedUser = {
-      nombreApellido: formData.nombreApellido,
-      email: formData.email,
-      usuario: formData.usuario,
-      password: formData.password,
-      obraSocial: {
-        nombre: formData.obraSocialNombre,
-        numeroAfiliado: formData.obraSocialNumero,
-      },
-    };
+    // Validación de duplicados (excluyendo al usuario actual)
+    if (usuarios?.find((u) => u.usuario === data.usuario && u.id !== user.id)) {
+      return SwalError.fire({
+        icon: "error",
+        title: "Error",
+        text: "El nombre de usuario ya existe",
+      });
+    }
+    if (usuarios?.find((u) => u.email === data.email && u.id !== user.id)) {
+      return SwalError.fire({
+        icon: "error",
+        title: "Error",
+        text: "El email ingresado ya se encuentra registrado",
+      });
+    }
 
     try {
-      await updateUser(updatedUser); // 🔥 llamada al context
-      onClose(); // cerrar modal
+      await updateUser({ ...user, ...data });
+      await SwalSuccess.fire({
+        icon: "success",
+        title: "¡Perfil actualizado!",
+        text: "Tus cambios se guardaron correctamente.",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      onClose();
     } catch (error) {
       alert("Hubo un error al actualizar el perfil");
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50  flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
       <div className="bg-white rounded-lg shadow-lg w-11/12 max-w-lg p-6 relative">
         <button
           onClick={onClose}
@@ -56,69 +91,124 @@ const EditProfileModal = ({ user, onClose }) => {
           <MdClose size={24} />
         </button>
 
-        <h2 className="text-xl font-bold mb-4">Editar Perfil</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Editar Perfil</h2>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            type="text"
-            name="nombreApellido"
-            placeholder="Nombre y Apellido"
-            value={formData.nombreApellido}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
+          {/* Nombre y Apellido */}
+          <div className="flex flex-col">
+            <label htmlFor="nombreApellido" className="text-sm font-light mb-1">
+              Nombre y Apellido
+            </label>
+            <input
+              id="nombreApellido"
+              type="text"
+              placeholder="Ingrese su nombre y apellido"
+              {...register("nombreApellido")}
+              className="border border-gray-500 p-2 rounded"
+            />
+            {errors.nombreApellido && (
+              <span className="text-red-500 text-sm">{errors.nombreApellido.message}</span>
+            )}
+          </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+          {/* Email */}
+          <div className="flex flex-col">
+            <label htmlFor="email" className="text-sm font-light mb-1">
+              Email
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="Ingrese su email"
+              {...register("email")}
+              className="border border-gray-500 p-2 rounded"
+            />
+            {errors.email && (
+              <span className="text-red-500 text-sm">{errors.email.message}</span>
+            )}
+          </div>
 
-          <input
-            type="text"
-            name="usuario"
-            placeholder="Nombre de usuario"
-            value={formData.usuario}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+          {/* Usuario */}
+          <div className="flex flex-col">
+            <label htmlFor="usuario" className="text-sm font-light mb-1">
+              Nombre de usuario
+            </label>
+            <input
+              id="usuario"
+              type="text"
+              placeholder="Ingrese su usuario"
+              {...register("usuario")}
+              className="border border-gray-500 p-2 rounded"
+            />
+            {errors.usuario && (
+              <span className="text-red-500 text-sm">{errors.usuario.message}</span>
+            )}
+          </div>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+          {/* Contraseña con ojito */}
+          <div className="flex flex-col relative">
+            <label htmlFor="password" className="text-sm font-light mb-1">
+              Contraseña
+            </label>
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Ingrese su contraseña"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setValue("password", e.target.value); // actualizar RHF
+              }}
+              className="border border-gray-500 p-2 rounded pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-2 top-1/2 text-gray-500 cursor-pointer"
+            >
+              {showPassword ? <IoEyeOff size={20} /> : <IoEye size={20} />}
+            </button>
+            {errors.password && (
+              <span className="text-red-500 text-sm">{errors.password.message}</span>
+            )}
+          </div>
 
-          <input
-            type="text"
-            name="obraSocialNombre"
-            placeholder="Obra Social"
-            value={formData.obraSocialNombre}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+          {/* Obra Social */}
+          <div className="flex flex-col lg:flex-row gap-2">
+            <div className="flex-1 flex flex-col">
+              <label htmlFor="obraSocialNombre" className="text-sm font-light mb-1">
+                Obra Social
+              </label>
+              <input
+                id="obraSocialNombre"
+                type="text"
+                placeholder="Ingrese obra social"
+                {...register("obraSocial.nombre")}
+                className="border border-gray-500 p-2 rounded"
+              />
+              {errors.obraSocial?.nombre && (
+                <span className="text-red-500 text-sm">{errors.obraSocial.nombre.message}</span>
+              )}
+            </div>
 
-          <input
-            type="text"
-            name="obraSocialNumero"
-            placeholder="Número de Afiliado"
-            value={formData.obraSocialNumero}
-            onChange={handleChange}
-            className="border p-2 rounded"
-            required
-          />
+            <div className="flex-1 flex flex-col">
+              <label htmlFor="obraSocialNumero" className="text-sm font-light mb-1">
+                Número de Afiliado
+              </label>
+              <input
+                id="obraSocialNumero"
+                type="text"
+                placeholder="Ingrese número de afiliado"
+                {...register("obraSocial.numeroAfiliado")}
+                className="border border-gray-500 p-2 rounded"
+              />
+              {errors.obraSocial?.numeroAfiliado && (
+                <span className="text-red-500 text-sm">{errors.obraSocial.numeroAfiliado.message}</span>
+              )}
+            </div>
+          </div>
 
+          {/* Botones */}
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="button"
@@ -130,9 +220,9 @@ const EditProfileModal = ({ user, onClose }) => {
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 cursor-pointer"
-              disabled={loading}
+              disabled={isSubmitting}
             >
-              {loading ? "Guardando..." : "Guardar cambios"}
+              {isSubmitting ? "Guardando..." : "Guardar cambios"}
             </button>
           </div>
         </form>

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import profesionalesData from "../Data/Profesionales.js";
 import { useAuth } from "../context/AuthContext";
+import { SwalSuccess } from "../utils/swal";
 
 const ReservarTurno = () => {
   const { id } = useParams();
@@ -62,7 +63,13 @@ const ReservarTurno = () => {
     localStorage.setItem("turnosPorUsuario", JSON.stringify(turnosPorUsuario));
     setTurnosGuardados(turnosActualizados);
 
-    alert("✅ Turno reservado con éxito");
+    SwalSuccess.fire({
+        icon: "success",
+        title: "Turno reservado con éxito",
+        text: "Su turno ha sido reservado, puede visualizarlo en el apartado Mis Turnos",
+        timer: 3000,
+        showConfirmButton: false,
+      });
     setHorarioSeleccionado(null);
   };
 
@@ -199,18 +206,11 @@ const ReservarTurno = () => {
         <button
           onClick={confirmarTurno}
           disabled={!horarioSeleccionado}
-          className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-medium py-2 px-12 rounded transition"
+          className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-medium py-2 px-12 rounded transition cursor-pointer"
         >
           Confirmar turno
         </button>
-        {user && (
-          <button
-            onClick={resetearTurnos}
-            className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded transition"
-          >
-            Borrar mis turnos
-          </button>
-        )}
+
       </div>
     </div>
   );
