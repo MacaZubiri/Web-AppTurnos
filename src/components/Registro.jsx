@@ -16,8 +16,16 @@ const schemaUsuario = z.object({
   telefono: z.string().min(8, "Teléfono inválido"),
   email: z.string().email({ message: "Email inválido" }),
   obraSocial: z.object({
-    nombre: z.string().min(2, "Debe ingresar el nombre de la obra social").optional().or(z.literal("")),
-    numeroAfiliado: z.string().min(3, "Número de afiliado inválido").optional().or(z.literal("")),
+    nombre: z
+      .string()
+      .min(2, "Debe ingresar el nombre de la obra social")
+      .optional()
+      .or(z.literal("")),
+    numeroAfiliado: z
+      .string()
+      .min(3, "Número de afiliado inválido")
+      .optional()
+      .or(z.literal("")),
   }),
 });
 
@@ -51,7 +59,11 @@ const Register = () => {
     }
 
     try {
-      const usuarioRegistrado = await registerUser(data);
+      // ✅ Agregamos role por defecto
+      const usuarioConRol = { ...data, role: "user" };
+
+      const usuarioRegistrado = await registerUser(usuarioConRol);
+
       await SwalSuccess.fire({
         icon: "success",
         title: "Registro exitoso",
@@ -86,7 +98,9 @@ const Register = () => {
             className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
           />
           {errors.nombreApellido && (
-            <span className="text-red-500 text-sm mt-1">{errors.nombreApellido.message}</span>
+            <span className="text-red-500 text-sm mt-1">
+              {errors.nombreApellido.message}
+            </span>
           )}
         </div>
 

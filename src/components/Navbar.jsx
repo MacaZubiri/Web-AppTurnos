@@ -20,7 +20,6 @@ const NavBar = () => {
   const toggleHamburger = () => setIsHamburgerOpen(!isHamburgerOpen);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  // Cerrar menús al hacer click afuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -30,16 +29,17 @@ const NavBar = () => {
         setIsHamburgerOpen(false);
       }
     };
-
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  // Para debugear que el usuario tenga role admin
+  // console.log("Usuario logueado en NavBar:", user);
 
   return (
     <>
       <nav className="bg-white shadow-sm fixed top-0 left-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
-          
 
           {/* Logo */}
           <div
@@ -57,23 +57,29 @@ const NavBar = () => {
             >
               Inicio
             </Link>
-
             <Link
               to="/buscar-profesional"
               className="hover:text-gray-700 font-medium transition-colors"
             >
               Profesionales
             </Link>
+
+            {/* Panel Admin solo visible en desktop si es admin */}
+            {user && user.role === "admin" && (
+              <Link
+                to="/admin"
+                className="hover:text-blue-800 font-medium transition-colors  text-blue-600"
+              >
+                Panel Administrador
+              </Link>
+            )}
           </div>
 
           {/* Right Side */}
           <div className="flex items-center gap-3">
 
             {/* Desktop: Usuario / Login */}
-            <div
-              className="hidden sm:flex items-center gap-2 relative"
-              ref={menuRef}
-            >
+            <div className="hidden sm:flex items-center gap-2 relative" ref={menuRef}>
               {user ? (
                 <div
                   className="flex items-center gap-2 cursor-pointer"
@@ -82,11 +88,8 @@ const NavBar = () => {
                   <p className="text-sm font-medium whitespace-nowrap">
                     {user.nombreApellido}
                   </p>
-
                   <HiChevronDown
-                    className={`w-5 h-5 transition-transform duration-200 ${
-                      isMenuOpen ? "rotate-180" : "rotate-0"
-                    }`}
+                    className={`w-5 h-5 transition-transform duration-200 ${isMenuOpen ? "rotate-180" : "rotate-0"}`}
                   />
                 </div>
               ) : (
@@ -98,7 +101,6 @@ const NavBar = () => {
                 </button>
               )}
 
-              {/* Dropdown Desktop */}
               {isMenuOpen && user && (
                 <div className="absolute top-12 right-0 w-44 bg-white shadow-lg rounded-md overflow-hidden">
                   <button
@@ -125,7 +127,7 @@ const NavBar = () => {
                     onClick={() => {
                       logout();
                       setIsMenuOpen(false);
-                      navigate ("/");
+                      navigate("/");
                     }}
                     className="w-full px-4 py-2 text-left hover:bg-gray-100 text-red-500 font-medium cursor-pointer"
                   >
@@ -136,37 +138,19 @@ const NavBar = () => {
             </div>
 
             {/* Mobile: Nombre + Hamburger */}
-            <div
-              className="flex items-center gap-2 sm:hidden relative"
-              ref={hamburgerRef}
-            >
+            <div className="flex items-center gap-2 sm:hidden relative" ref={hamburgerRef}>
               {user && (
-                <p className="text-sm font-medium truncate">
-                  {user.nombreApellido}
-                </p>
+                <p className="text-sm font-medium truncate">{user.nombreApellido}</p>
               )}
 
-              <FaBars
-                onClick={toggleHamburger}
-                className="text-2xl cursor-pointer"
-              />
+              <FaBars onClick={toggleHamburger} className="text-2xl cursor-pointer" />
 
-              {/* Dropdown Mobile */}
               {isHamburgerOpen && (
                 <div className="absolute top-12 right-0 w-56 bg-white shadow-lg rounded-md p-2 flex flex-col gap-1">
-                  <Link
-                    to="/"
-                    onClick={() => setIsHamburgerOpen(false)}
-                    className="px-4 py-2 hover:bg-gray-100 rounded"
-                  >
+                  <Link to="/" onClick={() => setIsHamburgerOpen(false)} className="px-4 py-2 hover:bg-gray-100 rounded">
                     Inicio
                   </Link>
-
-                  <Link
-                    to="/buscar-profesional"
-                    onClick={() => setIsHamburgerOpen(false)}
-                    className="px-4 py-2 hover:bg-gray-100 rounded"
-                  >
+                  <Link to="/buscar-profesional" onClick={() => setIsHamburgerOpen(false)} className="px-4 py-2 hover:bg-gray-100 rounded">
                     Profesionales
                   </Link>
 
@@ -181,7 +165,6 @@ const NavBar = () => {
                       >
                         Mi perfil
                       </button>
-
                       <button
                         onClick={() => {
                           navigate("/mis-turnos");
@@ -191,6 +174,19 @@ const NavBar = () => {
                       >
                         Mis turnos
                       </button>
+
+                      {/* Panel Admin solo en mobile */}
+                      {user.role === "admin" && (
+                        <button
+                          onClick={() => {
+                            navigate("/admin");
+                            setIsHamburgerOpen(false);
+                          }}
+                          className="px-4 py-2 text-left hover:bg-gray-100 rounded font-medium"
+                        >
+                          Panel Admin
+                        </button>
+                      )}
 
                       <button
                         onClick={() => {
@@ -221,10 +217,7 @@ const NavBar = () => {
       </nav>
 
       {/* Modal Login */}
-      <LoginModal
-        isOpen={isLoginOpen}
-        onClose={() => setIsLoginOpen(false)}
-      />
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </>
   );
 };

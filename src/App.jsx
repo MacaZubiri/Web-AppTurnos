@@ -11,6 +11,8 @@ import { AuthProvider } from './context/AuthContext';
 import NavBar from './components/Navbar';
 import Registro from "./components/Registro";
 import {ProfProvider} from './context/ProfContext';
+import PrivateRoute from "./components/PrivateRoute";
+import PanelAdmin from "./pages/PanelAdmin";
 
 
 
@@ -30,6 +32,12 @@ function App() {
               <Route path="/perfil-profesional/:id" element={<PerfilProfesional />} />
               <Route path="/reservar-turno/:id" element={<ReservarTurno />} />
               <Route path="/mis-turnos" element={<MisTurnos/>} />
+               <Route path="/admin"element={
+                <PrivateRoute role="admin">
+                  <PanelAdmin />
+                </PrivateRoute>
+              }
+            />
           </Routes>
       </BrowserRouter>
     </AuthProvider>

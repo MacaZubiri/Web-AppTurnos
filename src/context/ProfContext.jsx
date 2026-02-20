@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 
 export const ProfContext = createContext();
 
@@ -126,3 +126,5 @@ const guardarTurno = async (profId, turno, reemplazar = false) => {
     </ProfContext.Provider>
   );
 };
+
+export const useProf = () => useContext(ProfContext);
