@@ -97,9 +97,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Eliminar usuario
+  const eliminarUsuario = async (id) => {
+    try {
+      await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      setUsuarios((prev) => prev.filter((u) => u.id !== id));
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
+  };
+
+  const editarUsuario = async (id, updatedData) => {
+  try {
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+    if (!res.ok) throw new Error("Error al editar usuario");
+    const updatedUser = await res.json();
+    setUsuarios((prev) => prev.map(u => (u.id === id ? updatedUser : u)));
+  } catch (err) {
+    console.error(err);
+    setError(err.message);
+  }
+};
+
   return (
     <AuthContext.Provider
-      value={{ user,usuarios, login, logout, loading, registerUser, error, updateUser }}
+      value={{ user,usuarios, login, logout, loading, registerUser, error, updateUser, eliminarUsuario, editarUsuario }}
     >
       {children}
     </AuthContext.Provider>

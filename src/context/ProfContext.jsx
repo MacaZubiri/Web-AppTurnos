@@ -47,68 +47,60 @@ export const ProfProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Modificar profesional
-  const modificarProfesional = async (profId, updatedData) => {
+  // 🔹 Editar profesional
+  const editarProfesional = async (id, updatedData) => {
     setLoading(true);
     setError(null);
     try {
-      const profActual = prof.find(p => p.id === profId.toString());
-      if (!profActual) throw new Error("Profesional no encontrado");
-
-      const res = await fetch(`${API_URL_PROF}/${profId}`, {
+      const res = await fetch(`${API_URL_PROF}/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...profActual, ...updatedData }),
+        body: JSON.stringify(updatedData),
       });
-      if (!res.ok) throw new Error("Error al modificar profesional");
-
+      if (!res.ok) throw new Error("Error al editar profesional");
       const updatedProf = await res.json();
-      setProf(prev => prev.map(p => p.id === profId.toString() ? updatedProf : p));
+      setProf(prev => prev.map(p => (p.id === id.toString() ? updatedProf : p)));
       return updatedProf;
     } catch (err) {
+      console.error(err);
       setError(err.message);
       throw err;
     } finally {
       setLoading(false);
     }
+  };
+
+  // 🔹 Guardar turnos
+  const guardarTurno = async (profId, turno, reemplazar = false) => {
+    const profActual = prof.find(p => p.id === profId.toString());
+    if (!profActual) throw new Error("Profesional no encontrado");
+
+    const updatedTurnos = reemplazar ? turno : [...profActual.turnos, turno];
+
+    const res = await fetch(`${API_URL_PROF}/${profId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...profActual, turnos: updatedTurnos }),
+    });
+
+    if (!res.ok) throw new Error("Error al guardar turno");
+
+    const updatedProf = await res.json();
+    setProf(prev => prev.map(p => (p.id === profId.toString() ? updatedProf : p)));
+    return updatedProf;
   };
 
   // 🔹 Eliminar profesional
-  const eliminarProfesional = async (profId) => {
-    setLoading(true);
-    setError(null);
+  const eliminarProfesional = async (id) => {
     try {
-      const res = await fetch(`${API_URL_PROF}/${profId}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Error al eliminar profesional");
-      setProf(prev => prev.filter(p => p.id !== profId.toString()));
+      await fetch(`${API_URL_PROF}/${id}`, { method: "DELETE" });
+      setProf(prev => prev.filter(p => p.id !== id.toString()));
     } catch (err) {
+      console.error(err);
       setError(err.message);
       throw err;
-    } finally {
-      setLoading(false);
     }
   };
-
-  // 🔹 Agregar/guardar turnos (adaptado para reemplazar todo si es necesario)
-const guardarTurno = async (profId, turno, reemplazar = false) => {
-  const profActual = prof.find(p => p.id === profId);
-  if (!profActual) throw new Error("Profesional no encontrado");
-
-  // Si reemplazar es true, usamos directamente el array que pasamos; si no, agregamos uno nuevo
-  const updatedTurnos = reemplazar ? turno : [...profActual.turnos, turno];
-
-  const res = await fetch(`${API_URL_PROF}/${profId}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...profActual, turnos: updatedTurnos }),
-  });
-
-  if (!res.ok) throw new Error("Error al guardar turno");
-
-  const updatedProf = await res.json();
-  setProf(prev => prev.map(p => (p.id === profId ? updatedProf : p)));
-  return updatedProf;
-};
 
   return (
     <ProfContext.Provider
@@ -117,7 +109,7 @@ const guardarTurno = async (profId, turno, reemplazar = false) => {
         loading,
         error,
         registrarProfesionales,
-        modificarProfesional,
+        editarProfesional,
         eliminarProfesional,
         guardarTurno,
       }}
