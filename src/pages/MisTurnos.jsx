@@ -1,24 +1,34 @@
 import { useState, useEffect } from "react";
+import { useContext } from "react";
+import { ProfContext } from "../context/ProfContext";
 import { useAuth } from "../context/AuthContext";
-import {SwalWarning} from "../utils/swal";
+import { SwalWarning, SwalSuccess } from "../utils/swal";
 
 const MisTurnos = () => {
+  const { prof, guardarTurno } = useContext(ProfContext);
   const { user } = useAuth();
-  const [turnos, setTurnos] = useState([]);
+  const [turnosUsuario, setTurnosUsuario] = useState([]);
 
-  // Cargar turnos del usuario
+  // 🔹 Filtrar los turnos que corresponden al usuario logueado
   useEffect(() => {
-    if (!user) return;
-    const turnosPorUsuario = JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
-    setTurnos(turnosPorUsuario[user.id] || []);
-  }, [user]);
+    if (!user || !prof) return;
 
-  // Cancelar turno
-  const cancelarTurno = async (index) => {
+    const turnos = prof
+      .map((p) =>
+        p.turnos
+          ?.filter((t) => t.userId === user.id)
+          .map((t) => ({ ...t, profesional: { id: p.id, nombre: p.nombre } }))
+      )
+      .flat();
+    setTurnosUsuario(turnos || []);
+  }, [user, prof]);
+
+  // 🔹 Cancelar turno
+  const cancelarTurno = async (turno) => {
     if (!user) return;
 
     const result = await SwalWarning.fire({
-      title: "¿Estás seguro de que quieres cancelar este turno?",
+      title: "¿Estás seguro de cancelar este turno?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, cancelar",
@@ -27,15 +37,44 @@ const MisTurnos = () => {
     });
 
     if (result.isConfirmed) {
-      // Actualizamos localStorage y estado
-      const turnosPorUsuario = JSON.parse(localStorage.getItem("turnosPorUsuario")) || {};
-      const turnosUsuario = turnosPorUsuario[user.id] || [];
-      const turnosActualizados = turnosUsuario.filter((_, i) => i !== index);
-      turnosPorUsuario[user.id] = turnosActualizados;
-      localStorage.setItem("turnosPorUsuario", JSON.stringify(turnosPorUsuario));
-      setTurnos(turnosActualizados);
+      try {
+        // Encontrar al profesional correspondiente
+        const profesional = prof.find((p) => p.id === turno.profesional.id);
+        if (!profesional) throw new Error("Profesional no encontrado");
 
-      Swal.fire("Turno cancelado", "El turno fue eliminado correctamente", "success");
+        // Filtrar los turnos del profesional excluyendo el turno cancelado
+        const turnosActualizados = profesional.turnos.filter(
+          (t) =>
+            !(t.userId === user.id && t.dia === turno.dia && t.hora === turno.hora)
+        );
+
+        // Guardar el array actualizado en MockAPI (reemplazando todo)
+        await guardarTurno(profesional.id, turnosActualizados, true);
+
+        SwalSuccess.fire({
+          icon: "success",
+          title: "Turno cancelado",
+          text: "El turno se eliminó correctamente",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+
+        // Actualizar estado local
+        setTurnosUsuario((prev) =>
+          prev.filter(
+            (t) =>
+              !(
+                t.userId === user.id &&
+                t.dia === turno.dia &&
+                t.hora === turno.hora &&
+                t.profesional.id === turno.profesional.id
+              )
+          )
+        );
+      } catch (err) {
+        console.error(err);
+        alert("Error al cancelar el turno, intente nuevamente");
+      }
     }
   };
 
@@ -49,7 +88,7 @@ const MisTurnos = () => {
     );
   }
 
-  if (turnos.length === 0) {
+  if (turnosUsuario.length === 0) {
     return (
       <div className="pt-24 px-4 text-center">
         <p className="text-gray-500">No tenés turnos reservados aún.</p>
@@ -62,7 +101,7 @@ const MisTurnos = () => {
       <h1 className="text-2xl font-bold mb-6 text-center">Mis Turnos</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {turnos.map((turno, index) => (
+        {turnosUsuario.map((turno, index) => (
           <div
             key={index}
             className="bg-white shadow-md rounded-lg p-4 flex flex-col gap-2"
@@ -74,11 +113,11 @@ const MisTurnos = () => {
               <span className="font-medium">El día:</span> {turno.dia}
             </p>
             <p>
-              <span className="font-medium">A las:</span> {turno.horario} horas.
+              <span className="font-medium">A las:</span> {turno.hora} horas
             </p>
 
             <button
-              onClick={() => cancelarTurno(index)}
+              onClick={() => cancelarTurno(turno)}
               className="mt-2 bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm transition cursor-pointer"
             >
               Cancelar Turno

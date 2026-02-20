@@ -12,8 +12,16 @@ const LoginModal = ({ isOpen, onClose }) => {
   const [showPassword, setShowPassword] = useState(false); // 🔹 Estado para mostrar/ocultar contraseña
   const navigate = useNavigate();
   const closeRef = useRef(null);
+  const usuarioRef = useRef(null); // 🔹 Para el foco automático
 
-  // Cerrar modal al hacer click fuera
+  // 🔹 Foco automático en input usuario cuando el modal se abre
+  useEffect(() => {
+    if (isOpen) {
+      usuarioRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  // 🔹 Cerrar modal al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (closeRef.current && !closeRef.current.contains(event.target)) {
@@ -28,11 +36,13 @@ const LoginModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null; // no renderiza si no está abierto
 
+  // 🔹 Manejar login
   const handleSubmit = (e) => {
     e.preventDefault();
     const success = login(usuario, password);
     if (success) {
-      onClose(); // cerrar modal si login exitoso
+      onClose();        // cerrar modal si login exitoso
+      navigate("/");    // navegar después de cerrar
     } else {
       setError("Usuario o contraseña incorrectos");
     }
@@ -64,6 +74,7 @@ const LoginModal = ({ isOpen, onClose }) => {
 
           {/* Usuario */}
           <input
+            ref={usuarioRef}
             type="text"
             placeholder="Usuario"
             value={usuario}
@@ -112,10 +123,10 @@ const LoginModal = ({ isOpen, onClose }) => {
             </button>
           </div>
 
+          {/* Botón Ingresar */}
           <button
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors cursor-pointer"
-            onClick={navigate ("/")}
           >
             Ingresar
           </button>

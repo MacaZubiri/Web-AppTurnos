@@ -1,20 +1,45 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { IoArrowBack } from "react-icons/io5";
-import profesionalesData from "../Data/Profesionales";
+import { IoArrowBack} from "react-icons/io5";
 import { MdEmail } from "react-icons/md";
+import { useContext } from "react";
+import { ProfContext } from "../context/ProfContext";
+import { useAuth } from "../context/AuthContext";
+import { SwalWarning } from "../utils/swal";
 
 const PerfilProfesional = () => {
+  const { prof, loading, error } = useContext(ProfContext);
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const profesional = profesionalesData.find((p) => p.id === Number(id));
+  // 🔹 Mostrar loading mientras se cargan los datos
+  if (loading) return <p className="pt-24 text-center">Cargando profesional...</p>;
+
+  // 🔹 Mostrar error si falla la carga
+  if (error) return <p className="pt-24 text-center text-red-500">{error}</p>;
+
+  // 🔹 Buscar profesional una vez que ya tenemos datos
+  const profesional = prof.find((p) => p.id === id);
   if (!profesional) return <p className="pt-24 text-center">Profesional no encontrado</p>;
 
   const volverListado = () => navigate(-1);
 
+  const handleReservar = () => {
+    if (user) {
+      navigate(`/reservar-turno/${id}`);
+    } else {
+      SwalWarning.fire({
+        title: "Debe iniciar sesión para reservar un turno",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
+
+
   return (
     <div className="pt-24 px-4 max-w-5xl mx-auto">
-
       {/* Botón volver */}
       <button
         onClick={volverListado}
@@ -24,11 +49,9 @@ const PerfilProfesional = () => {
       </button>
 
       {/* Contenedor principal */}
-      <div className="bg-gray-100 rounded-lg p-6 flex flex-col md:flex-row md:items-start md:justify-between">
-
+      <div className="bg-gray-100 rounded-lg p-6 flex flex-col md:flex-row md:items-start md:justify-between pb-20">
         {/* Izquierda: Imagen + Info */}
         <div className="flex flex-col md:flex-row md:items-start md:gap-6 w-full md:flex-1">
-
           {/* Imagen */}
           <div className="shrink-0 flex justify-center md:justify-start mb-4 md:mb-0">
             <img
@@ -59,7 +82,7 @@ const PerfilProfesional = () => {
             <hr className="border-t border-gray-300 w-full my-4" />
 
             <h3 className="font-medium mb-1">Formación:</h3>
-            <ul className=" ">
+            <ul>
               {profesional.formacion.map((titulo, index) => (
                 <li key={index}>{titulo}</li>
               ))}
@@ -68,7 +91,7 @@ const PerfilProfesional = () => {
             <hr className="border-t border-gray-300 w-full my-4" />
 
             <h3 className="font-medium mb-1">Obras sociales:</h3>
-            <ul className="">
+            <ul>
               {profesional.obrasSociales.map((obra, index) => (
                 <li key={index}>{obra}</li>
               ))}
@@ -87,7 +110,7 @@ const PerfilProfesional = () => {
         {/* Botón Reservar turno Desktop */}
         <div className="hidden md:flex md:items-start">
           <button
-            onClick={() => navigate(`/reservar-turno/${id}`)}
+            onClick={handleReservar}
             className="w-40 h-10 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded cursor-pointer transition-colors duration-300 ease-in-out"
           >
             Reservar turno
@@ -96,9 +119,9 @@ const PerfilProfesional = () => {
       </div>
 
       {/* Botón sticky Mobile */}
-      <div className="fixed bottom-0 left-0 w-full p-4 bg-white shadow-md md:hidden z-50">
+      <div className="fixed bottom-0 left-0 w-full p-4 bg-white shadow-md md:hidden z-50 ">
         <button
-          onClick={() => navigate(`/reservar-turno/${id}`)}
+          onClick={handleReservar}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-lg transition"
         >
           Reservar turno

@@ -10,12 +10,14 @@ import MisTurnos from "./pages/MisTurnos";
 import { AuthProvider } from './context/AuthContext';
 import NavBar from './components/Navbar';
 import Registro from "./components/Registro";
+import {ProfProvider} from './context/ProfContext';
 
 
 
 function App() {
  
   return (
+    <ProfProvider>
     <AuthProvider>
       <BrowserRouter>
         <NavBar/>
@@ -31,6 +33,7 @@ function App() {
           </Routes>
       </BrowserRouter>
     </AuthProvider>
+    </ProfProvider>
   );
 }
 

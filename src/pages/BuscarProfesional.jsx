@@ -1,27 +1,33 @@
-import { useState, useRef, useEffect } from "react";
-import profesionalesData from "../Data/Profesionales.js";
+import { useState, useRef, useEffect, useContext } from "react";
 import { IoMdSearch } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { ProfContext } from "../context/ProfContext";
+import { useAuth } from "../context/AuthContext";
+import { SwalWarning } from "../utils/swal";
+
 
 const BuscarProfesionales = () => {
   const navigate = useNavigate();
+  const { prof, loading, error } = useContext(ProfContext); // ✅ desde context
   const [busqueda, setBusqueda] = useState("");
   const [especialidad, setEspecialidad] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+   const { user } = useAuth();
 
-  // Generar lista de especialidades únicas desde los datos
+  // Lista de especialidades únicas
   const especialidades = Array.from(
-    new Set(profesionalesData.map((p) => p.especialidad))
+    new Set(prof?.map((p) => p.especialidad) || [])
   );
 
-  const profesionalesFiltrados = profesionalesData.filter(
-    (prop) =>
-      prop.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
-      (especialidad === "" || prop.especialidad === especialidad)
-  );
+  // Filtrado de profesionales según búsqueda y especialidad
+  const profesionalesFiltrados = prof?.filter(
+    (p) =>
+      p.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
+      (especialidad === "" || p.especialidad === especialidad)
+  ) || [];
 
-  // Cerrar dropdown si clickeas fuera
+  // Cerrar dropdown al hacer click fuera
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -31,6 +37,22 @@ const BuscarProfesionales = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  if (loading) return <p className="text-center mt-10">Cargando profesionales...</p>;
+  if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+
+  const handleReservar = (profId) => {
+    if (user) {
+      navigate(`/reservar-turno/${profId}`);
+    } else {
+      SwalWarning.fire({
+        title: "Debe iniciar sesión para reservar un turno",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonText: "Aceptar",
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col max-w-6xl mx-auto p-4">
@@ -124,7 +146,7 @@ const BuscarProfesionales = () => {
                     Ver perfil
                   </button>
                   <button
-                    onClick={() => navigate(`/reservar-turno/${prop.id}`)}
+                     onClick={() => handleReservar(prop.id)}
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded cursor-pointer transition-colors duration-300 ease-in-out"
                   >
                     Reservar

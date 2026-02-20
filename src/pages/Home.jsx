@@ -1,9 +1,12 @@
 import iconocalendario from "../assets/iconos/icono-calendario.svg";
 import iconobuscarprofesional from "../assets/iconos/icono-buscarprofesional.svg";
 import { useNavigate } from "react-router-dom";
+import { SwalWarning } from "../utils/swal";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <section className="pt-24 px-4">
@@ -22,8 +25,20 @@ const Home = () => {
         {/* Botones */}
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
 
+          {/* Botón Reservar Turno */}
           <button
-            onClick={() => navigate("/reservar-turno")}
+            onClick={() => {
+              if (user) {
+                navigate("/reservar-turno"); // usuario logueado → navega
+              } else {
+                SwalWarning.fire({
+                  title: "Debe iniciar sesión para reservar un turno",
+                  icon: "warning",
+                  showCancelButton: false,
+                  confirmButtonText: "Aceptar",
+                });
+              }
+            }}
             className="flex items-center justify-center gap-2
                        w-full sm:w-auto
                        px-6 py-3
@@ -39,6 +54,7 @@ const Home = () => {
             Reservar un turno
           </button>
 
+          {/* Botón Buscar Profesional */}
           <button
             onClick={() => navigate("/buscar-profesional")}
             className="flex items-center justify-center gap-2
