@@ -6,6 +6,7 @@ import { FaCirclePlus } from "react-icons/fa6";
 import Swal from "sweetalert2";
 import EditarUsuario from "../components/EditarUsuario"; // tu modal de usuario
 import EditarProfesional from "../components/EditarProfesional"; 
+import CrearUsuarioModal from "../components/CrearUsuarioModal"; // versión adaptada del modal
 
 const PanelAdmin = () => {
   const { usuarios, loading: loadingUsuarios, editarUsuario, eliminarUsuario } = useAuth();
@@ -15,6 +16,7 @@ const PanelAdmin = () => {
   // Estados para modal de usuario
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [createUserModalOpen, setCreateUserModalOpen] = useState(false);
 
   // Estados para modal de profesional
   const [profModalOpen, setProfModalOpen] = useState(false);
@@ -76,6 +78,11 @@ const PanelAdmin = () => {
     setUserModalOpen(true);
   };
 
+  // Abrir modal para crear usuario
+  const handleCrearUsuario = () => {
+    setCreateUserModalOpen(true);
+  };
+
   // Abrir modal para editar profesional
   const handleEditarProfesional = (prof) => {
     setSelectedProf(prof);
@@ -101,7 +108,10 @@ const PanelAdmin = () => {
             Usuarios
           </h2>
           <div className="flex mb-10">
-            <button className="flex gap-2 items-center font-medium bg-blue-600 px-4 py-2 rounded-lg shadow-md text-amber-50 hover:bg-blue-900 transition-colors duration-300 ease-in-out">
+            <button
+              onClick={handleCrearUsuario}
+              className="flex gap-2 items-center font-medium bg-blue-600 px-4 py-2 rounded-lg shadow-md text-amber-50 hover:bg-blue-900 transition-colors duration-300 ease-in-out"
+            >
               <FaCirclePlus className="h-4 w-4" /> Crear nuevo usuario
             </button>
           </div>
@@ -126,7 +136,9 @@ const PanelAdmin = () => {
                     <td className="border p-2">{u.usuario}</td>
                     <td className="border p-2">{u.email}</td>
                     <td className="border p-2">{u.role || "usuario"}</td>
-                    <td className="border p-2">{u.obraSocial?.nombre} ({u.obraSocial?.numeroAfiliado})</td>
+                    <td className="border p-2">
+                      {u.obraSocial?.nombre} ({u.obraSocial?.numeroAfiliado})
+                    </td>
                     <td className="border p-2">
                       <div className="flex gap-2 w-full justify-center">
                         <button
@@ -237,6 +249,11 @@ const PanelAdmin = () => {
         isOpen={profModalOpen}
         onClose={() => setProfModalOpen(false)}
         onSave={handleGuardarProfesional}
+      />
+
+      <CrearUsuarioModal
+        isOpen={createUserModalOpen}
+        onClose={() => setCreateUserModalOpen(false)}
       />
     </div>
   );

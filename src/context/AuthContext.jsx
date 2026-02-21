@@ -35,30 +35,33 @@ export const AuthProvider = ({ children }) => {
 
   // 🔹 Registrar usuario (role por defecto = "usuario")
   const registerUser = async (userData) => {
-    setLoading(true);
-    setError(null);
+  setLoading(true);
+  setError(null);
 
-    const userWithRole = { ...userData, role: "usuario" };
+  const userWithRole = { ...userData, role: "usuario" };
 
-    try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(userWithRole),
-      });
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userWithRole),
+    });
 
-      if (!response.ok) throw new Error("Error al registrar usuario");
+    if (!response.ok) throw new Error("Error al registrar usuario");
 
-      const newUser = await response.json();
-      setUser(newUser); // Loguear automáticamente
-      return newUser;
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  };
+    const newUser = await response.json();
+
+    setUser(newUser); // si querés loguearlo automáticamente
+    setUsuarios(prev => [...prev, newUser]); // ⚡ Agrega el nuevo usuario a la lista
+
+    return newUser;
+  } catch (err) {
+    setError(err.message);
+    throw err;
+  } finally {
+    setLoading(false);
+  }
+};
 
   // 🔹 Login
   const login = (usuarioInput, passwordInput) => {
@@ -123,10 +126,35 @@ export const AuthProvider = ({ children }) => {
     setError(err.message);
   }
 };
+const crearUsuarioAdmin = async (userData) => {
+  setLoading(true);
+  setError(null);
+
+  const userWithRole = { ...userData, role: "usuario" };
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userWithRole),
+    });
+
+    if (!response.ok) throw new Error("Error al registrar usuario");
+
+    const newUser = await response.json();
+    setUsuarios(prev => [...prev, newUser]); // actualiza la lista para PanelAdmin
+    return newUser;
+  } catch (err) {
+    setError(err.message);
+    throw err;
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <AuthContext.Provider
-      value={{ user,usuarios, login, logout, loading, registerUser, error, updateUser, eliminarUsuario, editarUsuario }}
+      value={{ user,usuarios, login, logout, loading, registerUser, error,crearUsuarioAdmin, updateUser, eliminarUsuario, editarUsuario }}
     >
       {children}
     </AuthContext.Provider>
