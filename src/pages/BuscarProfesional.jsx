@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ProfContext } from "../context/ProfContext";
 import { useAuth } from "../context/AuthContext";
 import { SwalWarning } from "../utils/swal";
+import Spinner from "../components/Spinner"
 
 
 const BuscarProfesionales = () => {
@@ -14,6 +15,8 @@ const BuscarProfesionales = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
    const { user } = useAuth();
+
+   
 
   // Lista de especialidades únicas
   const especialidades = Array.from(
@@ -38,7 +41,9 @@ const BuscarProfesionales = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (loading) return <p className="text-center mt-10">Cargando profesionales...</p>;
+  if (loading) return <div className="flex justify-center items-center mt-10">
+      <Spinner size={16} color="blue-500" />
+    </div>;
   if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
 
   const handleReservar = (profId) => {
@@ -132,9 +137,6 @@ const BuscarProfesionales = () => {
                 <div className="flex-1 flex flex-col text-center md:text-left md:justify-center w-full">
                   <h3 className="font-medium text-lg">{prop.nombre}</h3>
                   <p className="text-gray-700 text-md">{prop.especialidad}</p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    {prop.diasAtencion.join(" | ")}
-                  </p>
                 </div>
 
                 {/* Botones */}

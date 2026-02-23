@@ -5,6 +5,7 @@ import { useContext } from "react";
 import { ProfContext } from "../context/ProfContext";
 import { useAuth } from "../context/AuthContext";
 import { SwalWarning } from "../utils/swal";
+import Spinner from "../components/Spinner";
 
 const PerfilProfesional = () => {
   const { prof, loading, error } = useContext(ProfContext);
@@ -12,8 +13,18 @@ const PerfilProfesional = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  const diasSemanaOptions = [
+  { value: 1, label: "Lunes" },
+  { value: 2, label: "Martes" },
+  { value: 3, label: "Miércoles" },
+  { value: 4, label: "Jueves" },
+  { value: 5, label: "Viernes" },
+];
+
   // 🔹 Mostrar loading mientras se cargan los datos
-  if (loading) return <p className="pt-24 text-center">Cargando profesional...</p>;
+  if (loading) return <div className="flex justify-center items-center mt-10">
+        <Spinner size={16} color="blue-500" />
+      </div>
 
   // 🔹 Mostrar error si falla la carga
   if (error) return <p className="pt-24 text-center text-red-500">{error}</p>;
@@ -67,12 +78,15 @@ const PerfilProfesional = () => {
             <p className="text-gray-600 mb-4">{profesional.especialidad}</p>
 
             <h3 className="font-medium mb-1">Días y horarios de atención:</h3>
-            {Object.entries(profesional.horariosAtencion).map(([dia, horarios]) => (
-              <p key={dia}>
-                <span className="font-normal capitalize ml-2">{dia}:</span>{" "}
-                {horarios.join(" | ")}
-              </p>
-            ))}
+            {profesional.disponibilidad.map((diaObj) => {
+              const diaLabel = ["Lunes","Martes","Miércoles","Jueves","Viernes"][diaObj.diaSemana - 1] || `Día ${diaObj.diaSemana}`;
+              return (
+                <p key={diaObj.diaSemana}>
+                  <span className="font-normal ml-2">{diaLabel}:</span>{" "}
+                  {diaObj.bloques.map(b => `${b.inicio} - ${b.fin}`).join(" | ")}
+                </p>
+              );
+            })}
 
             <hr className="border-t border-gray-300 w-full my-4" />
 

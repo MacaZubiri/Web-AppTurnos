@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ProfContext } from "../context/ProfContext";
 import { useAuth } from "../context/AuthContext";
 import { SwalWarning, SwalSuccess } from "../utils/swal";
@@ -38,17 +37,14 @@ const MisTurnos = () => {
 
     if (result.isConfirmed) {
       try {
-        // Encontrar al profesional correspondiente
         const profesional = prof.find((p) => p.id === turno.profesional.id);
         if (!profesional) throw new Error("Profesional no encontrado");
 
-        // Filtrar los turnos del profesional excluyendo el turno cancelado
         const turnosActualizados = profesional.turnos.filter(
           (t) =>
-            !(t.userId === user.id && t.dia === turno.dia && t.hora === turno.hora)
+            !(t.userId === user.id && t.fecha === turno.fecha && t.hora === turno.hora)
         );
 
-        // Guardar el array actualizado en MockAPI (reemplazando todo)
         await guardarTurno(profesional.id, turnosActualizados, true);
 
         SwalSuccess.fire({
@@ -59,16 +55,10 @@ const MisTurnos = () => {
           showConfirmButton: false,
         });
 
-        // Actualizar estado local
         setTurnosUsuario((prev) =>
           prev.filter(
             (t) =>
-              !(
-                t.userId === user.id &&
-                t.dia === turno.dia &&
-                t.hora === turno.hora &&
-                t.profesional.id === turno.profesional.id
-              )
+              !(t.userId === user.id && t.fecha === turno.fecha && t.hora === turno.hora && t.profesional.id === turno.profesional.id)
           )
         );
       } catch (err) {
@@ -101,29 +91,38 @@ const MisTurnos = () => {
       <h1 className="text-2xl font-bold mb-6 text-center">Mis Turnos</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {turnosUsuario.map((turno, index) => (
-          <div
-            key={index}
-            className="bg-white shadow-md rounded-lg p-4 flex flex-col gap-2"
-          >
-            <h2 className="font-semibold text-lg text-center mb-2">
-              Turno con Dr. {turno.profesional.nombre}
-            </h2>
-            <p>
-              <span className="font-medium">El día:</span> {turno.dia}
-            </p>
-            <p>
-              <span className="font-medium">A las:</span> {turno.hora} horas
-            </p>
+        {turnosUsuario.map((turno, index) => {
+          // 🔹 Parsear fecha
+          const fecha = new Date(turno.fecha);
+          const opciones = { weekday: "long", day: "numeric", month: "long" };
+          const fechaFormateada = fecha.toLocaleDateString("es-AR", opciones);
 
-            <button
-              onClick={() => cancelarTurno(turno)}
-              className="mt-2 bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm transition cursor-pointer"
+          return (
+            <div
+              key={index}
+              className="bg-white shadow-md rounded-lg p-4 flex flex-col gap-2"
             >
-              Cancelar Turno
-            </button>
-          </div>
-        ))}
+              <h2 className="font-semibold text-lg text-center mb-2">
+                Turno con Dr. {turno.profesional.nombre}
+              </h2>
+
+              <p>
+                <span className="font-medium">El día:</span> {fechaFormateada}
+              </p>
+
+              <p>
+                <span className="font-medium">A las:</span> {turno.hora} hs
+              </p>
+
+              <button
+                onClick={() => cancelarTurno(turno)}
+                className="mt-2 bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded text-sm transition cursor-pointer"
+              >
+                Cancelar Turno
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

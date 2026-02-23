@@ -1,78 +1,54 @@
 import iconocalendario from "../assets/iconos/icono-calendario.svg";
-import iconobuscarprofesional from "../assets/iconos/icono-buscarprofesional.svg";
 import { useNavigate } from "react-router-dom";
 import { SwalWarning } from "../utils/swal";
 import { useAuth } from "../context/AuthContext";
+import header from "../assets/header.svg";
 
 const Home = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
   return (
-    <section className="pt-24 px-4">
-      <div className="max-w-4xl mx-auto text-center">
+    <section
+      className="relative pt-24 px-4 h-[80vh] pb-10 sm:h-[85vh] bg-cover bg-center"
+      style={{ backgroundImage: `url(${header})` }}
+    >
+      {/* Overlay opcional para mejor contraste */}
+      <div className="absolute inset-0 bg-black/30"></div>
 
-        {/* Título */}
+      <div className="relative max-w-4xl mx-auto text-center text-white pt-10">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
-          Encontrá al profesional que necesitás
+          Expertos en salud dedicados a acompañarte en cada etapa de tu vida.
         </h1>
 
-        {/* Subtítulo */}
-        <h2 className="text-lg sm:text-xl text-gray-700 mb-8">
+        <h2 className="text-lg sm:text-xl mb-6">
           ¡Solicitá tu turno en segundos!
         </h2>
 
-        {/* Botones */}
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
-
-          {/* Botón Reservar Turno */}
+        <div className="flex gap-4 sm:gap-6 justify-center mt-6 sm:mt-10">
           <button
             onClick={() => {
               if (user) {
-                navigate("/reservar-turno"); // usuario logueado → navega
+                navigate("/reservar-turno");
               } else {
                 SwalWarning.fire({
                   title: "Debe iniciar sesión para reservar un turno",
                   icon: "warning",
-                  showCancelButton: false,
                   confirmButtonText: "Aceptar",
                 });
               }
             }}
             className="flex items-center justify-center gap-2
-                       w-full sm:w-auto
-                       px-6 py-3
-                       bg-blue-500 text-white rounded-lg
-                       hover:bg-blue-600 transition
-                       text-base sm:text-lg cursor-pointer"
+             w-full max-w-xs mx-auto
+             px-6 py-3
+             bg-blue-500 text-white rounded-lg
+             hover:bg-blue-600 transition cursor-pointer
+             sm:w-auto sm:px-20 sm:text-xl shadow-lg "
           >
-            <img
-              src={iconocalendario}
-              alt="Icono calendario"
-              className="w-5 h-5 sm:w-6 sm:h-6"
-            />
-            Reservar un turno
-          </button>
-
-          {/* Botón Buscar Profesional */}
-          <button
-            onClick={() => navigate("/buscar-profesional")}
-            className="flex items-center justify-center gap-2
-                       w-full sm:w-auto
-                       px-6 py-3
-                       border border-blue-500 text-blue-500 rounded-lg
-                       hover:bg-blue-50 transition
-                       text-base sm:text-lg cursor-pointer"
-          >
-            <img
-              src={iconobuscarprofesional}
-              alt="Icono buscar profesional"
-              className="w-5 h-5 sm:w-6 sm:h-6"
-            />
-            Buscar profesional
+            <img src={iconocalendario} className="w-5 h-5" />
+            Reservar turno
           </button>
         </div>
-
       </div>
     </section>
   );

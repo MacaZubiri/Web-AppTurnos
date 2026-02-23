@@ -12,6 +12,7 @@ export const SwalError = Swal.mixin({
   },
   buttonsStyling: false,
   confirmButtonText: "Aceptar",
+   iconColor: "#dc2626",
 });
 
 export const SwalSuccess = Swal.mixin({
@@ -25,6 +26,7 @@ export const SwalSuccess = Swal.mixin({
   },
   buttonsStyling: false,
   confirmButtonText: "Aceptar",
+  iconColor: "#16a34a"
 });
 
 export const SwalWarning = Swal.mixin({
@@ -41,4 +43,5 @@ export const SwalWarning = Swal.mixin({
   buttonsStyling: false,
   confirmButtonText: "Confirmar",
   cancelButtonText: "Cancelar",
+  iconColor: "#ca8a04"
 });

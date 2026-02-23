@@ -1,26 +1,18 @@
+// PanelAdmin.jsx
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useProf } from "../context/ProfContext";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { FaCirclePlus } from "react-icons/fa6";
-import Swal from "sweetalert2";
-import EditarUsuario from "../components/EditarUsuario"; // tu modal de usuario
-import EditarProfesional from "../components/EditarProfesional"; 
-import CrearUsuarioModal from "../components/CrearUsuarioModal"; // versión adaptada del modal
+import { useNavigate } from "react-router-dom";
+import { SwalSuccess, SwalWarning } from "../utils/swal";
+import Spinner from "../components/Spinner";
 
 const PanelAdmin = () => {
+  const navigate = useNavigate();
   const { usuarios, loading: loadingUsuarios, editarUsuario, eliminarUsuario } = useAuth();
-  const { prof, loading: loadingProf, editarProfesional, eliminarProfesional } = useProf();
+  const { prof, loading: loadingProf, eliminarProfesional } = useProf();
   const [isDesktop, setIsDesktop] = useState(true);
-
-  // Estados para modal de usuario
-  const [userModalOpen, setUserModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [createUserModalOpen, setCreateUserModalOpen] = useState(false);
-
-  // Estados para modal de profesional
-  const [profModalOpen, setProfModalOpen] = useState(false);
-  const [selectedProf, setSelectedProf] = useState(null);
 
   // Detectar si es desktop
   useEffect(() => {
@@ -42,15 +34,15 @@ const PanelAdmin = () => {
 
   if (loadingUsuarios || loadingProf) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p>Cargando datos...</p>
-      </div>
+      <div className="flex justify-center items-center mt-10">
+            <Spinner size={16} color="blue-500" />
+        </div>
     );
   }
 
   // Función para eliminar usuario con confirmación
   const handleEliminarUsuario = async (id) => {
-    const result = await Swal.fire({
+    const result = await SwalWarning.fire({
       title: "¿Seguro que querés eliminar este usuario?",
       icon: "warning",
       text: "Una vez eliminado no se podrá recuperar",
@@ -58,12 +50,11 @@ const PanelAdmin = () => {
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
     });
-
     if (!result.isConfirmed) return;
 
     await eliminarUsuario(id);
 
-    Swal.fire({
+    SwalSuccess.fire({
       icon: "success",
       title: "Usuario eliminado",
       text: "El usuario se eliminó correctamente",
@@ -72,29 +63,46 @@ const PanelAdmin = () => {
     });
   };
 
-  // Abrir modal para editar usuario
-  const handleEditarUsuario = (user) => {
-    setSelectedUser(user);
-    setUserModalOpen(true);
+  // Función para eliminar profesional
+  const handleEliminarProfesional = async (id) => {
+    const res = await SwalWarning.fire({
+      title: "¿Seguro que querés eliminar este profesional?",
+      text: "Una vez eliminado no podrá ser recuperado",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (!res.isConfirmed) return;
+
+    await eliminarProfesional(id);
+
+    SwalSuccess.fire({
+      icon: "success",
+      title: "Profesional eliminado correctamente",
+      timer: 2000,
+      showConfirmButton: false,
+    });
   };
 
-  // Abrir modal para crear usuario
+  // Abrir página para editar profesional
+  const handleEditarProfesional = (id) => {
+    navigate(`/profesionales/editar/${id}`);
+  };
+
+  // Abrir página para crear profesional
+  const handleCrearProfesional = () => {
+    navigate(`/profesionales/crear`);
+  };
+
+  // Abrir página para editar usuario
+  const handleEditarUsuario = (id) => {
+    navigate(`/usuarios/editar/${id}`);
+  };
+
+  // Abrir página para crear usuario
   const handleCrearUsuario = () => {
-    setCreateUserModalOpen(true);
-  };
-
-  // Abrir modal para editar profesional
-  const handleEditarProfesional = (prof) => {
-    setSelectedProf(prof);
-    setProfModalOpen(true);
-  };
-
-  // Guardar cambios de profesional
-  const handleGuardarProfesional = async (updatedProf) => {
-    await editarProfesional(selectedProf.id, updatedProf);
-    setProfModalOpen(false);
-    setSelectedProf(null);
-    Swal.fire("¡Actualizado!", "El profesional fue editado correctamente.", "success");
+    navigate(`/usuarios/crear`);
   };
 
   return (
@@ -107,10 +115,10 @@ const PanelAdmin = () => {
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 justify-center">
             Usuarios
           </h2>
-          <div className="flex mb-10">
+          <div className="flex mb-8 items-start">
             <button
               onClick={handleCrearUsuario}
-              className="flex gap-2 items-center font-medium bg-blue-600 px-4 py-2 rounded-lg shadow-md text-amber-50 hover:bg-blue-900 transition-colors duration-300 ease-in-out"
+              className="flex gap-2 items-center font-medium bg-green-700 px-4 py-2 rounded-lg shadow-sm text-amber-50 hover:bg-green-900 transition-colors duration-300 ease-in-out cursor-pointer"
             >
               <FaCirclePlus className="h-4 w-4" /> Crear nuevo usuario
             </button>
@@ -142,14 +150,14 @@ const PanelAdmin = () => {
                     <td className="border p-2">
                       <div className="flex gap-2 w-full justify-center">
                         <button
-                          onClick={() => handleEditarUsuario(u)}
-                          className="flex gap-1 bg-blue-400 p-2 rounded hover:bg-blue-600 transition-colors duration-300 ease-in-out shadow-sm"
+                          onClick={() => handleEditarUsuario(u.id)}
+                          className="flex gap-1 bg-blue-400 p-2 rounded hover:bg-blue-600 transition-colors duration-300 ease-in-out shadow-sm cursor-pointer"
                         >
                           <FaEdit className="text-amber-50" />
                         </button>
                         <button
                           onClick={() => handleEliminarUsuario(u.id)}
-                          className="flex gap-1 bg-red-400 p-2 rounded hover:bg-red-600 transition-colors duration-300 ease-in-out shadow-sm"
+                          className="flex gap-1 bg-red-400 p-2 rounded hover:bg-red-600 transition-colors duration-300 ease-in-out shadow-sm cursor-pointer"
                         >
                           <FaTrash className="text-amber-50" />
                         </button>
@@ -169,8 +177,11 @@ const PanelAdmin = () => {
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 justify-center">
             Profesionales
           </h2>
-          <div className="flex mb-10">
-            <button className="flex gap-2 items-center font-medium bg-blue-600 px-4 py-2 rounded-lg shadow-md text-amber-50 hover:bg-blue-900 transition-colors duration-300 ease-in-out">
+          <div className="flex mb-8 items-start">
+            <button
+              onClick={handleCrearProfesional}
+              className="flex gap-2 items-center font-medium bg-green-700 px-4 py-2 rounded-lg shadow-md text-amber-50 hover:bg-green-900 transition-colors duration-300 ease-in-out cursor-pointer"
+            >
               <FaCirclePlus className="h-4 w-4" /> Cargar nuevo profesional
             </button>
           </div>
@@ -195,30 +206,14 @@ const PanelAdmin = () => {
                     <td className="border p-2">
                       <div className="flex gap-2 w-full justify-center">
                         <button
-                          onClick={() => handleEditarProfesional(p)}
-                          className="flex gap-1 bg-blue-400 p-2 rounded hover:bg-blue-600 transition-colors duration-300 ease-in-out shadow-sm"
+                          onClick={() => handleEditarProfesional(p.id)}
+                          className="flex gap-1 bg-blue-400 p-2 rounded hover:bg-blue-600 transition-colors duration-300 ease-in-out shadow-sm cursor-pointer"
                         >
                           <FaEdit className="text-amber-50" />
                         </button>
                         <button
-                          onClick={async () => {
-                            const res = await Swal.fire({
-                              title: "¿Seguro que querés eliminar este profesional?",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonText: "Sí, eliminar",
-                              cancelButtonText: "Cancelar",
-                            });
-                            if (!res.isConfirmed) return;
-                            await eliminarProfesional(p.id);
-                            Swal.fire({
-                              icon: "success",
-                              title: "Profesional eliminado",
-                              timer: 2000,
-                              showConfirmButton: false,
-                            });
-                          }}
-                          className="flex gap-1 bg-red-400 p-2 rounded hover:bg-red-600 transition-colors duration-300 ease-in-out shadow-sm"
+                          onClick={() => handleEliminarProfesional(p.id)}
+                          className="flex gap-1 bg-red-400 p-2 rounded hover:bg-red-600 transition-colors duration-300 ease-in-out shadow-sm cursor-pointer"
                         >
                           <FaTrash className="text-amber-50" />
                         </button>
@@ -231,30 +226,6 @@ const PanelAdmin = () => {
           </div>
         </div>
       </section>
-
-      {/* Modales */}
-      <EditarUsuario
-        isOpen={userModalOpen}
-        onClose={() => setUserModalOpen(false)}
-        user={selectedUser}
-        onSave={async (updatedUser) => {
-          await editarUsuario(updatedUser.id, updatedUser);
-          setUserModalOpen(false);
-          Swal.fire("¡Actualizado!", "El usuario fue editado correctamente.", "success");
-        }}
-      />
-
-      <EditarProfesional
-        profesional={selectedProf}
-        isOpen={profModalOpen}
-        onClose={() => setProfModalOpen(false)}
-        onSave={handleGuardarProfesional}
-      />
-
-      <CrearUsuarioModal
-        isOpen={createUserModalOpen}
-        onClose={() => setCreateUserModalOpen(false)}
-      />
     </div>
   );
 };

@@ -72,23 +72,43 @@ export const ProfProvider = ({ children }) => {
 
   // 🔹 Guardar turnos
   const guardarTurno = async (profId, turno, reemplazar = false) => {
-    const profActual = prof.find(p => p.id === profId.toString());
-    if (!profActual) throw new Error("Profesional no encontrado");
+  const profActual = prof.find(p => p.id === profId.toString());
+  if (!profActual) throw new Error("Profesional no encontrado");
 
-    const updatedTurnos = reemplazar ? turno : [...profActual.turnos, turno];
+  let updatedTurnos;
 
-    const res = await fetch(`${API_URL_PROF}/${profId}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...profActual, turnos: updatedTurnos }),
-    });
+  if (reemplazar) {
+    // Si reemplazamos, simplemente usamos el turno que llega
+    updatedTurnos = turno;
+  } else {
+    // Filtramos turnos existentes para evitar duplicados
+    const turnosSinDuplicados = profActual.turnos.filter(
+      t =>
+        !(
+          t.userId === turno.userId &&
+          t.fecha === turno.fecha &&
+          t.hora === turno.hora
+        )
+    );
+    updatedTurnos = [...turnosSinDuplicados, turno];
+  }
 
-    if (!res.ok) throw new Error("Error al guardar turno");
+  // Guardamos en el backend
+  const res = await fetch(`${API_URL_PROF}/${profId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...profActual, turnos: updatedTurnos }),
+  });
 
-    const updatedProf = await res.json();
-    setProf(prev => prev.map(p => (p.id === profId.toString() ? updatedProf : p)));
-    return updatedProf;
-  };
+  if (!res.ok) throw new Error("Error al guardar turno");
+
+  const updatedProf = await res.json();
+  setProf(prev =>
+    prev.map(p => (p.id === profId.toString() ? updatedProf : p))
+  );
+
+  return updatedProf;
+};
 
   // 🔹 Eliminar profesional
   const eliminarProfesional = async (id) => {

@@ -3,8 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { HiChevronDown } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
-import logo from "../assets/icono-logo.svg";
+import logo from "../assets/logo.svg";
 import LoginModal from "./LoginModal";
+
 
 const NavBar = () => {
   const { user, logout } = useAuth();
@@ -46,7 +47,7 @@ const NavBar = () => {
             className="flex items-center cursor-pointer"
             onClick={() => navigate("/")}
           >
-            <img src={logo} alt="Logo" className="h-6" />
+            <img src={logo} alt="Logo" className="sm:h-10 h-8" />
           </div>
 
           {/* Links Desktop */}
