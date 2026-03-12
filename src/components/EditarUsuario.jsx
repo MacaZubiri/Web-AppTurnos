@@ -86,12 +86,12 @@ const UserModal = ({ isOpen, onClose, user, onSave }) => {
 
           <div className="mb-4">
              <label htmlFor="role" className="text-sm font-light mb-1">
-                Rol
+                Teléfono
               </label>
             <input
-              type="text"
-              placeholder="Rol"
-              {...register("role")}
+              type="number"
+              placeholder="Teléfono"
+              {...register("telefono")}
               className="border w-full p-2 rounded  border-gray-500"
             />
           </div>

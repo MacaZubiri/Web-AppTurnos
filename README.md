@@ -1,16 +1,70 @@
-# React + Vite
+#  Consultorio App Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicación web para gestionar turnos médicos. Permite a los usuarios registrarse, consultar profesionales, reservar turnos y gestionarlos desde su perfil personal. También incluye un panel administrativo para crear, editar y eliminar usuarios y profesionales.
 
-Currently, two official plugins are available:
+## Características principales
+### Para usuarios:
+- Registro y login de usuarios
+- Visualización de un listado de profesionales con información detallada
+- Consulta de turnos disponibles y reserva de turnos
+- Ver y cancelar turnos desde el perfil personal
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Para administradores:
+- Panel administrativo para gestionar la plataforma
+- Crear, editar y eliminar usuarios y profesionales
 
-## React Compiler
+## 🛠 Tecnologías y librerías usadas
+- **Frontend:** React + Vite
+- **Routing:** React Router
+- **Formularios y validación:** React Hook Form + Zod
+- **Estilos:** Tailwind CSS
+- **Alertas y notificaciones:** SweetAlert
+- **Iconos:** React Icons
+- **Mock API para datos:** MockAPI
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
+## 🚀 Instalación y ejecución
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clonar el repositorio:
+
+```bash
+git clone https://github.com/MacaZubiri/AppTurnos.git
+cd AppTurnos
+```
+
+2. Instalar dependencias:
+```bash
+npm install
+```
+3. Ejecutar la app:
+```bash
+npm run dev
+```
+
+## 💡 Uso
+
+### Como usuario:
+
+- Registrarse o iniciar sesión.
+- Explorar el listado de profesionales y ver sus perfiles.
+- Reservar turnos y gestionarlos desde el perfil personal.
+
+### Como administrador:
+
+- Ingresar con credenciales de administrador.
+- Acceder al panel administrativo para crear, editar o eliminar usuarios y profesionales.
+
+
+### 🔑 Credenciales de prueba:
+
+#### Administrador:
+
+- Usuario: admin123
+- Contraseña: Admin123
+
+#### Usuario normal:
+- Se pueden registrar libremente con cualquier email y contraseña para probar las funcionalidades de usuario.
+
+
+⚠️ **Advertencia: Estos datos son solo para propósitos de prueba y no están conectados a ningún sistema real.Recordá no utilizar datos reales.**
+

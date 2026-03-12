@@ -167,6 +167,14 @@ const EditProfileModal = ({ user, onClose }) => {
               <span className="text-red-500 text-sm">{errors.password.message}</span>
             )}
           </div>
+          
+          <div>
+             <label className="text-sm font-light mb-1" >Teléfono</label>
+            <input
+              type="text"
+              {...register("telefono")} pattern="[0-9]*" className="w-full border p-2 rounded"
+            />
+          </div>
 
           <div className="flex flex-col lg:flex-row gap-2">
             <div className="flex-1 flex flex-col">

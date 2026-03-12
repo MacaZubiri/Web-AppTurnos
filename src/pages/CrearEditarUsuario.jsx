@@ -13,7 +13,7 @@ const schemaUsuario = z.object({
   usuario: z.string().min(2, "El usuario es obligatorio"),
   email: z.email("Email inválido"),
   password: z.string().min(4, "La contraseña debe tener al menos 4 caracteres"),
-  role: z.enum(["usuario", "admin"]).optional(),
+  telefono: z.string().min(8, "Teléfono inválido").optional(),
   obraSocial: z.object({
     nombre: z.string().min(1, "Debe completar el nombre de obra social").optional(),
     numeroAfiliado: z.string().min(1, "Debe completar el número de afiliado").optional(),
@@ -124,11 +124,11 @@ const CrearEditarUsuario = () => {
 
         
         <div>
-          <label>Rol</label>
-          <select {...register("role")} className="w-full border p-2 rounded">
-            <option value="usuario">Usuario</option>
-            <option value="admin">Admin</option>
-          </select>
+          <label> Teléfono</label>
+            <input
+              type="text"
+              {...register("telefono")} pattern="[0-9]*" className="w-full border p-2 rounded"
+            />
         </div>
 
         
