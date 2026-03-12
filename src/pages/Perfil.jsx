@@ -11,7 +11,7 @@ const Perfil = () => {
   const { prof, guardarTurno } = useContext(ProfContext);
   const [turnosUsuario, setTurnosUsuario] = useState([]);
 
-  // 🔹 Filtrar los turnos del usuario
+  //Filtrar turnos
   useEffect(() => {
     if (!user || !prof) return;
 
@@ -25,7 +25,7 @@ const Perfil = () => {
     setTurnosUsuario(turnos || []);
   }, [user, prof]);
 
-  // 🔹 Cancelar turno
+  //Cancelar turno
   const cancelarTurno = async (turno) => {
     if (!user) return;
 
@@ -83,10 +83,9 @@ const Perfil = () => {
 
   return (
     <>
-      {/* 🔹 Card de datos del usuario */}
-      <div className="bg-amber-50 w-full py-3 px-4 shadow-md mt-20 flex flex-col justify-center items-center sm:justify-between sm:items-start">
+      
+      <div className="bg-white w-full py-3 px-4 shadow-md mt-20 flex flex-col justify-center items-center sm:justify-between sm:items-start">
         <div className="mt-2 sm:flex sm:justify-between sm:items-start w-full">
-          {/* Datos */}
           <div className="flex flex-col leading-10 items-center sm:justify-start sm:items-start">
             <h1 className="font-bold text-lg mb-2">{user.nombreApellido}</h1>
 
@@ -112,7 +111,6 @@ const Perfil = () => {
 
           <div className="relative left-1/2 right-1/2 -mx-[50vw] w-screen h-px bg-gray-300 my-4 sm:hidden"></div>
 
-          {/* Botón Editar */}
           <div className="flex w-full items-center justify-center sm:justify-end">
             <span
               className="text-blue-600 font-semibold cursor-pointer hover:underline"
@@ -124,12 +122,12 @@ const Perfil = () => {
         </div>
       </div>
 
-      {/* 🔹 Modal */}
+    
       {isOpen && <ModalDatosPersonales user={user} onClose={() => setIsOpen(false)} />}
 
       
 
-      {/* 🔹 Mis Turnos - bloque separado */}
+      
       <div className="pt-8 px-4 max-w-5xl mx-auto">
         <h1 className="text-2xl font-bold mb-6 text-center">Mis Turnos</h1>
 
@@ -138,8 +136,7 @@ const Perfil = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {turnosUsuario.map((turno, index) => {
-              // 🔹 Parsear la fecha correctamente
-              const fecha = new Date(turno.fecha); // turno.fecha viene de tu nuevo contexto
+              const fecha = new Date(turno.fecha); 
               const opciones = { weekday: "long", day: "numeric", month: "long" };
               const fechaFormateada = fecha.toLocaleDateString("es-AR", opciones);
 

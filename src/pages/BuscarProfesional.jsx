@@ -9,7 +9,7 @@ import Spinner from "../components/Spinner"
 
 const BuscarProfesionales = () => {
   const navigate = useNavigate();
-  const { prof, loading, error } = useContext(ProfContext); // ✅ desde context
+  const { prof, loading, error } = useContext(ProfContext); 
   const [busqueda, setBusqueda] = useState("");
   const [especialidad, setEspecialidad] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -18,19 +18,19 @@ const BuscarProfesionales = () => {
 
    
 
-  // Lista de especialidades únicas
+  
   const especialidades = Array.from(
     new Set(prof?.map((p) => p.especialidad) || [])
   );
 
-  // Filtrado de profesionales según búsqueda y especialidad
+  
   const profesionalesFiltrados = prof?.filter(
     (p) =>
       p.nombre.toLowerCase().includes(busqueda.toLowerCase()) &&
       (especialidad === "" || p.especialidad === especialidad)
   ) || [];
 
-  // Cerrar dropdown al hacer click fuera
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -61,9 +61,9 @@ const BuscarProfesionales = () => {
 
   return (
     <div className="flex flex-col max-w-6xl mx-auto p-4">
-      {/* Barra superior */}
+      
       <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-6 mt-20 w-full">
-        {/* Buscador */}
+        
         <div className="relative w-full md:flex-1">
           <IoMdSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
           <input
@@ -75,7 +75,7 @@ const BuscarProfesionales = () => {
           />
         </div>
 
-        {/* Dropdown custom */}
+        
         <div className="relative w-full md:w-64" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -113,7 +113,7 @@ const BuscarProfesionales = () => {
         </div>
       </div>
 
-      {/* Listado de profesionales */}
+      
       {profesionalesFiltrados.length === 0 ? (
         <p className="text-center mt-10">No se encontraron profesionales</p>
       ) : (
@@ -123,7 +123,7 @@ const BuscarProfesionales = () => {
               key={prop.id}
               className="flex flex-col border rounded-lg shadow p-4 bg-gray-100 w-full md:flex-row md:items-center"
             >
-              {/* Imagen */}
+              
               <div>
                 <img
                   src={prop.imagen}
@@ -133,13 +133,13 @@ const BuscarProfesionales = () => {
               </div>
 
               <div className="md:flex md:justify-between md:w-full">
-                {/* Información */}
+                
                 <div className="flex-1 flex flex-col text-center md:text-left md:justify-center w-full">
                   <h3 className="font-medium text-lg">{prop.nombre}</h3>
                   <p className="text-gray-700 text-md">{prop.especialidad}</p>
                 </div>
 
-                {/* Botones */}
+                
                 <div className="flex flex-col gap-2 mt-6 md:mt-0 w-full md:w-40 md:justify-center">
                   <button
                     onClick={() => navigate(`/perfil-profesional/${prop.id}`)}

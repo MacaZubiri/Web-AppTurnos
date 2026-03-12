@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { SwalSuccess } from "../utils/swal";
+import { SwalSuccess, SwalError } from "../utils/swal";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,7 +14,7 @@ const schemaUsuario = z.object({
   usuario: z.string().min(3, "El usuario debe tener al menos 3 caracteres"),
   password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
   telefono: z.string().min(8, "Teléfono inválido"),
-  email: z.string().email({ message: "Email inválido" }),
+  email: z.email("Email inválido" ),
   obraSocial: z.object({
     nombre: z
       .string()
@@ -52,15 +52,22 @@ const Register = () => {
 
   const onSubmit = async (data) => {
     if (usuarios?.find((u) => u.usuario === data.usuario)) {
-      return Swal.fire("Error", "El nombre de usuario ya existe", "error");
+      return SwalError.fire({
+        icon: "error",
+        title: "El nombre de usuario ya se encuentra utilizado",
+
+      });
     }
     if (usuarios?.find((u) => u.email === data.email)) {
-      return Swal.fire("Error", "El email ya está registrado", "error");
+      return SwalError.fire({
+        icon: "error",
+        title: "El email ya se encuentra registrado",
+      });
     }
 
     try {
-      // ✅ Agregamos role por defecto
-      const usuarioConRol = { ...data, role: "user" };
+      
+      const usuarioConRol = { ...data, role: "usuario" };
 
       const usuarioRegistrado = await registerUser(usuarioConRol);
 
@@ -72,11 +79,12 @@ const Register = () => {
         showConfirmButton: false,
       });
       navigate("/");
+      
     } catch (err) {
-      Swal.fire({
+      SwalError.fire({
         icon: "error",
-        title: "Error",
-        text: err.message,
+        title: "Error al registrarse",
+        text: "Ocurrio un error al intentar registrarse, intente nuevamente"
       });
     }
   };
@@ -89,13 +97,17 @@ const Register = () => {
       >
         <h2 className="text-3xl font-semibold text-center mb-4">Registrarse</h2>
 
-        {/* Nombre y apellido */}
+       
         <div className="flex flex-col">
           <input
             type="text"
             placeholder="Nombre y apellido"
             {...register("nombreApellido")}
-            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+            className={`border rounded-md px-5 py-3 text-lg ${
+                errors.usuario
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
           />
           {errors.nombreApellido && (
             <span className="text-red-500 text-sm mt-1">
@@ -104,52 +116,68 @@ const Register = () => {
           )}
         </div>
 
-        {/* Usuario */}
+        
         <div className="flex flex-col">
           <input
             type="text"
             placeholder="Nombre de usuario"
             {...register("usuario")}
-            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+            className={`border rounded-md px-5 py-3 text-lg ${
+                errors.usuario
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
           />
           {errors.usuario && (
             <span className="text-red-500 text-sm mt-1">{errors.usuario.message}</span>
           )}
         </div>
 
-        {/* Email */}
+        
         <div className="flex flex-col">
           <input
             type="email"
             placeholder="Email"
             {...register("email")}
-            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+           className={`border rounded-md px-5 py-3 text-lg ${
+              errors.usuario
+                ? "border-red-500 focus:ring-red-500"
+                : "border-gray-300 focus:ring-blue-500"
+            }`}
           />
           {errors.email && (
             <span className="text-red-500 text-sm mt-1">{errors.email.message}</span>
           )}
         </div>
 
-        {/* Teléfono */}
+        
         <div className="flex flex-col">
           <input
             type="tel"
             placeholder="Número de teléfono"
             {...register("telefono")}
-            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+           className={`border rounded-md px-5 py-3 text-lg ${
+                errors.usuario
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
           />
           {errors.telefono && (
             <span className="text-red-500 text-sm mt-1">{errors.telefono.message}</span>
           )}
         </div>
 
-        {/* Contraseña con ojito */}
+        
         <div className="flex flex-col relative">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Contraseña"
             {...register("password")}
-            className="border border-gray-300 rounded-md px-5 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg pr-10"
+            className={`border rounded-md px-5 py-3 text-lg ${
+                errors.usuario
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
           />
           <button
             type="button"
@@ -163,14 +191,18 @@ const Register = () => {
           )}
         </div>
 
-        {/* Obra social */}
+        
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1 flex flex-col">
             <input
               type="text"
               placeholder="Nombre de la obra social*"
               {...register("obraSocial.nombre")}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+              className={`border rounded-md px-5 py-3 text-lg ${
+                  errors.usuario
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
+                }`}
             />
             {errors.obraSocial?.nombre && (
               <span className="text-red-500 text-sm mt-1">{errors.obraSocial.nombre.message}</span>
@@ -182,7 +214,11 @@ const Register = () => {
               type="text"
               placeholder="Número de afiliado"
               {...register("obraSocial.numeroAfiliado")}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg"
+             className={`border rounded-md px-5 py-3 text-lg ${
+                errors.usuario
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
             />
             {errors.obraSocial?.numeroAfiliado && (
               <span className="text-red-500 text-sm mt-1">{errors.obraSocial.numeroAfiliado.message}</span>

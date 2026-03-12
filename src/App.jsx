@@ -1,4 +1,3 @@
-// App.jsx
 import './App.css';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -48,10 +47,6 @@ function App() {
                 </PrivateRoute>
               } 
             />
-
-
-
-            {/* Crear y Editar profesionales como rutas privadas */}
             <Route 
               path="/profesionales/crear" 
               element={
@@ -68,8 +63,6 @@ function App() {
                 </PrivateRoute>
               } 
             />
-
-            {/* Crear y Editar usuarios como rutas privadas */}
             <Route 
               path="/usuarios/crear" 
               element={

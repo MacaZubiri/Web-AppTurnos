@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 🔹 Cargar todos los usuarios desde MockAPI
+   
   useEffect(() => {
     const fetchUsuarios = async () => {
       try {
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     fetchUsuarios();
   }, []);
 
-  // 🔹 Recuperar usuario logueado de LocalStorage
+  
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // 🔹 Registrar usuario (role por defecto = "usuario")
+  
   const registerUser = async (userData) => {
   setLoading(true);
   setError(null);
@@ -51,8 +51,8 @@ export const AuthProvider = ({ children }) => {
 
     const newUser = await response.json();
 
-    setUser(newUser); // si querés loguearlo automáticamente
-    setUsuarios(prev => [...prev, newUser]); // ⚡ Agrega el nuevo usuario a la lista
+    setUser(newUser); 
+    setUsuarios(prev => [...prev, newUser]); 
 
     return newUser;
   } catch (err) {
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
   }
 };
 
-  // 🔹 Login
+ 
   const login = (usuarioInput, passwordInput) => {
     const usuarioEncontrado = usuarios.find(
       (u) => u.usuario === usuarioInput && u.password === passwordInput
@@ -76,13 +76,13 @@ export const AuthProvider = ({ children }) => {
     return false;
   };
 
-  // 🔹 Logout
+  
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
   };
 
-  // 🔹 Actualizar usuario logueado
+  
   const updateUser = async (updatedData) => {
     try {
       const res = await fetch(`${API_URL}/${user.id}`, {
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Eliminar usuario
+  
   const eliminarUsuario = async (id) => {
     try {
       await fetch(`${API_URL}/${id}`, { method: "DELETE" });
@@ -142,7 +142,7 @@ const crearUsuarioAdmin = async (userData) => {
     if (!response.ok) throw new Error("Error al registrar usuario");
 
     const newUser = await response.json();
-    setUsuarios(prev => [...prev, newUser]); // actualiza la lista para PanelAdmin
+    setUsuarios(prev => [...prev, newUser]); 
     return newUser;
   } catch (err) {
     setError(err.message);
@@ -161,5 +161,5 @@ const crearUsuarioAdmin = async (userData) => {
   );
 };
 
-// Hook para usar el context de forma cómoda
+
 export const useAuth = () => useContext(AuthContext);

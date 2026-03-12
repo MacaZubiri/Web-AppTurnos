@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SwalError, SwalSuccess } from "../utils/swal";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 
-// Esquema de validación
+
 const schemaUsuario = z.object({
   nombreApellido: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
   usuario: z.string().min(3, "El usuario debe tener al menos 3 caracteres"),
@@ -23,7 +23,7 @@ const schemaUsuario = z.object({
 const EditProfileModal = ({ user, onClose }) => {
   const { updateUser, usuarios } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState(user.password || ""); // 🔹 contraseña por defecto
+  const [password, setPassword] = useState(user.password || ""); 
 
   const {
     register,
@@ -46,10 +46,9 @@ const EditProfileModal = ({ user, onClose }) => {
   });
 
   const onSubmit = async (data) => {
-    // Si el password no fue modificado, usar el valor del estado local
+    
     if (!data.password) data.password = password;
 
-    // Validación de duplicados (excluyendo al usuario actual)
     if (usuarios?.find((u) => u.usuario === data.usuario && u.id !== user.id)) {
       return SwalError.fire({
         icon: "error",
@@ -94,7 +93,6 @@ const EditProfileModal = ({ user, onClose }) => {
         <h2 className="text-xl font-bold mb-6 text-center">Editar Perfil</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-          {/* Nombre y Apellido */}
           <div className="flex flex-col">
             <label htmlFor="nombreApellido" className="text-sm font-light mb-1">
               Nombre y Apellido
@@ -111,7 +109,6 @@ const EditProfileModal = ({ user, onClose }) => {
             )}
           </div>
 
-          {/* Email */}
           <div className="flex flex-col">
             <label htmlFor="email" className="text-sm font-light mb-1">
               Email
@@ -128,7 +125,6 @@ const EditProfileModal = ({ user, onClose }) => {
             )}
           </div>
 
-          {/* Usuario */}
           <div className="flex flex-col">
             <label htmlFor="usuario" className="text-sm font-light mb-1">
               Nombre de usuario
@@ -145,7 +141,6 @@ const EditProfileModal = ({ user, onClose }) => {
             )}
           </div>
 
-          {/* Contraseña con ojito */}
           <div className="flex flex-col relative">
             <label htmlFor="password" className="text-sm font-light mb-1">
               Contraseña
@@ -157,7 +152,7 @@ const EditProfileModal = ({ user, onClose }) => {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
-                setValue("password", e.target.value); // actualizar RHF
+                setValue("password", e.target.value); 
               }}
               className="border border-gray-500 p-2 rounded pr-10"
             />
@@ -173,7 +168,6 @@ const EditProfileModal = ({ user, onClose }) => {
             )}
           </div>
 
-          {/* Obra Social */}
           <div className="flex flex-col lg:flex-row gap-2">
             <div className="flex-1 flex flex-col">
               <label htmlFor="obraSocialNombre" className="text-sm font-light mb-1">
@@ -208,7 +202,6 @@ const EditProfileModal = ({ user, onClose }) => {
             </div>
           </div>
 
-          {/* Botones */}
           <div className="flex justify-end gap-2 mt-4">
             <button
               type="button"

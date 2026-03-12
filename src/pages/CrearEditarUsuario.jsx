@@ -1,4 +1,3 @@
-// CrearEditarUsuario.jsx
 import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +7,7 @@ import * as z from "zod";
 import { SwalSuccess, SwalError } from "../utils/swal";
 import { GrStatusGood } from "react-icons/gr";
 
-// 🔹 Schema Zod para usuario
+
 const schemaUsuario = z.object({
   nombreApellido: z.string().min(2, "El nombre y apellido es obligatorio"),
   usuario: z.string().min(2, "El usuario es obligatorio"),
@@ -77,9 +76,9 @@ const CrearEditarUsuario = () => {
           timer: 2500,
           showConfirmButton: false,
         });
-        reset(defaultValues); // limpiar formulario si se creó
+        reset(defaultValues); 
       }
-      navigate("/admin"); // volver al panel admin
+      navigate("/admin"); 
     } catch (err) {
       SwalError.fire({
         title: "Error al crear/editar usuario",
@@ -91,39 +90,39 @@ const CrearEditarUsuario = () => {
   };
 
   return (
-    <div className="bg-gray-100 max-w-4/6 mx-auto pt-24 px-8 h-auto pb-10">
+    <div className="bg-white max-w-4/6 mx-auto pt-24 px-8 pb-10 mt-28 rounded-md">
       <h1 className="text-2xl font-bold mb-6">{id ? "Editar Usuario" : "Crear Usuario"}</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         
-        {/* Nombre y Apellido */}
+        
         <div>
           <label>Nombre y Apellido</label>
           <input {...register("nombreApellido")} className="w-full border p-2 rounded"/>
           {errors.nombreApellido && <p className="text-red-500">{errors.nombreApellido.message}</p>}
         </div>
 
-        {/* Usuario */}
+        
         <div>
           <label>Usuario</label>
           <input {...register("usuario")} className="w-full border p-2 rounded"/>
           {errors.usuario && <p className="text-red-500">{errors.usuario.message}</p>}
         </div>
 
-        {/* Email */}
+        
         <div>
           <label>Email</label>
           <input {...register("email")} className="w-full border p-2 rounded"/>
           {errors.email && <p className="text-red-500">{errors.email.message}</p>}
         </div>
 
-        {/* Password */}
+        
         <div>
           <label>Contraseña</label>
           <input type="password" {...register("password")} className="w-full border p-2 rounded"/>
           {errors.password && <p className="text-red-500">{errors.password.message}</p>}
         </div>
 
-        {/* Role */}
+        
         <div>
           <label>Rol</label>
           <select {...register("role")} className="w-full border p-2 rounded">
@@ -132,7 +131,7 @@ const CrearEditarUsuario = () => {
           </select>
         </div>
 
-        {/* Obra social */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label>Obra Social</label>

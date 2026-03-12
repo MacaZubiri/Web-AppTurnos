@@ -21,7 +21,7 @@ const UserModal = ({ isOpen, onClose, user, onSave }) => {
     defaultValues: user || {}
   });
 
-  // Cada vez que cambia el usuario seleccionado, reseteamos el form
+
   useEffect(() => {
     reset(user || {});
   }, [user, reset]);
@@ -29,7 +29,7 @@ const UserModal = ({ isOpen, onClose, user, onSave }) => {
   if (!isOpen) return null;
 
   const submitHandler = async (data) => {
-    await onSave({ ...user, ...data }); // conservamos el id y lo que no se edita
+    await onSave({ ...user, ...data }); 
     onClose();
    SwalSuccess.fire({
         icon: "success",
@@ -95,7 +95,7 @@ const UserModal = ({ isOpen, onClose, user, onSave }) => {
               className="border w-full p-2 rounded  border-gray-500"
             />
           </div>
-          {/* Obra Social */}
+          
           <div className="flex flex-col lg:flex-row gap-2">
             <div className="flex-1 flex flex-col">
               <label htmlFor="obraSocialNombre" className="text-sm font-light mb-1">

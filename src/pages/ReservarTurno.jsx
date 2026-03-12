@@ -28,7 +28,7 @@ const ReservarTurno = () => {
   const nombreRef = useRef(null);
   const especialidadRef = useRef(null);
 
-  // 🔹 Cerrar dropdowns al click fuera
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (nombreRef.current && !nombreRef.current.contains(event.target)) setDropdownNombre(false);
@@ -38,7 +38,6 @@ const ReservarTurno = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // 🔹 Cargar profesional por id
   useEffect(() => {
     if (id && prof.length > 0) {
       const encontrado = prof.find((p) => p.id.toString() === id.toString());
@@ -63,7 +62,6 @@ const ReservarTurno = () => {
     ? [profSeleccionado]
     : [];
 
-  // 🔹 Generar horarios a partir de bloques y duración
   const generarHorarios = (bloques, duracion) => {
     const horarios = [];
     bloques.forEach(({ inicio, fin }) => {
@@ -81,7 +79,7 @@ const ReservarTurno = () => {
     return horarios;
   };
 
-  // 🔹 Generar array de fechas solo con disponibilidad
+  
   const generarFechasMes = (profActual) => {
     const fechas = [];
     const hoy = new Date();
@@ -105,7 +103,6 @@ const ReservarTurno = () => {
     return fechas;
   };
 
-  // 🔹 Verificar si turno está ocupado
   const estaReservado = (profActual, fecha, hora) =>
     profActual.turnos?.some(
       (t) =>
@@ -113,7 +110,7 @@ const ReservarTurno = () => {
         t.hora === hora
     );
 
-  // 🔹 Confirmar turno
+  
   const confirmarTurno = async () => {
     if (!user) return alert("Debes iniciar sesión");
     if (!horarioSeleccionado || !profSeleccionado) return alert("Seleccioná profesional y horario");
@@ -147,7 +144,7 @@ const ReservarTurno = () => {
   return (
     <div className="pt-24 px-4 max-w-5xl mx-auto pb-36">
 
-      {/* Botón volver */}
+      
       <button
         onClick={volverListado}
         className="flex items-center gap-2 mb-7 text-blue-500 hover:text-blue-700 cursor-pointer"
@@ -157,7 +154,7 @@ const ReservarTurno = () => {
 
       <h1 className="text-center text-2xl font-bold mb-6">Reservar Turno</h1>
 
-      {/* Dropdowns */}
+      
       {!id && (
         <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
           <div className="relative w-full md:w-1/2" ref={nombreRef}>
@@ -220,7 +217,7 @@ const ReservarTurno = () => {
         </div>
       )}
 
-      {/* Cards de días y horarios */}
+      
       {profesionalesFiltrados.length === 0 ? (
         <p className="text-center mt-10">No se encontraron profesionales</p>
       ) : (
@@ -273,7 +270,7 @@ const ReservarTurno = () => {
         })
       )}
 
-      {/* Botones Reservar */}
+      
       <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-md z-50 flex justify-center ">
         <button
           onClick={confirmarTurno}

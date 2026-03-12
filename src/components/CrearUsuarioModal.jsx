@@ -76,7 +76,7 @@ const CrearUsuarioModal = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <h2 className="text-3xl font-semibold text-center mb-4">Crear usuario</h2>
 
-          {/* Fila: Nombre y usuario */}
+         
           <div className="flex gap-4">
             <div className="flex-1 flex flex-col">
               <input
@@ -102,7 +102,7 @@ const CrearUsuarioModal = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Fila: Email y Teléfono */}
+          
           <div className="flex gap-4">
             <div className="flex-1 flex flex-col">
               <input
@@ -128,7 +128,7 @@ const CrearUsuarioModal = ({ isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Contraseña */}
+          
           <div className="flex flex-col relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -148,7 +148,7 @@ const CrearUsuarioModal = ({ isOpen, onClose }) => {
             )}
           </div>
 
-          {/* Obra social */}
+          
           <div className="flex gap-4">
             <div className="flex-1 flex flex-col">
               <input
@@ -177,7 +177,7 @@ const CrearUsuarioModal = ({ isOpen, onClose }) => {
             *Si usted no posee obra social, puede dejar estos campos vacíos.
           </p>
 
-          {/* Botones */}
+          
           <div className="flex justify-center gap-4">
             <button
               type="submit"

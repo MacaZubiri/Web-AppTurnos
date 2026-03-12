@@ -21,15 +21,15 @@ const PerfilProfesional = () => {
   { value: 5, label: "Viernes" },
 ];
 
-  // 🔹 Mostrar loading mientras se cargan los datos
+  
   if (loading) return <div className="flex justify-center items-center mt-10">
         <Spinner size={16} color="blue-500" />
       </div>
 
-  // 🔹 Mostrar error si falla la carga
+ 
   if (error) return <p className="pt-24 text-center text-red-500">{error}</p>;
 
-  // 🔹 Buscar profesional una vez que ya tenemos datos
+  
   const profesional = prof.find((p) => p.id === id);
   if (!profesional) return <p className="pt-24 text-center">Profesional no encontrado</p>;
 
@@ -51,7 +51,6 @@ const PerfilProfesional = () => {
 
   return (
     <div className="pt-24 px-4 max-w-5xl mx-auto">
-      {/* Botón volver */}
       <button
         onClick={volverListado}
         className="flex items-center gap-2 mb-7 text-blue-500 hover:text-blue-700 cursor-pointer"
@@ -59,11 +58,9 @@ const PerfilProfesional = () => {
         <IoArrowBack size={20} /> Volver al listado
       </button>
 
-      {/* Contenedor principal */}
+      
       <div className="bg-gray-100 rounded-lg p-6 flex flex-col md:flex-row md:items-start md:justify-between pb-20">
-        {/* Izquierda: Imagen + Info */}
         <div className="flex flex-col md:flex-row md:items-start md:gap-6 w-full md:flex-1">
-          {/* Imagen */}
           <div className="shrink-0 flex justify-center md:justify-start mb-4 md:mb-0">
             <img
               src={profesional.imagen}
@@ -72,7 +69,7 @@ const PerfilProfesional = () => {
             />
           </div>
 
-          {/* Info */}
+          
           <div className="flex-1 text-center md:text-left">
             <h2 className="text-2xl font-bold">{profesional.nombre}</h2>
             <p className="text-gray-600 mb-4">{profesional.especialidad}</p>
@@ -121,7 +118,7 @@ const PerfilProfesional = () => {
           </div>
         </div>
 
-        {/* Botón Reservar turno Desktop */}
+        
         <div className="hidden md:flex md:items-start">
           <button
             onClick={handleReservar}
@@ -132,7 +129,7 @@ const PerfilProfesional = () => {
         </div>
       </div>
 
-      {/* Botón sticky Mobile */}
+      
       <div className="fixed bottom-0 left-0 w-full p-4 bg-white shadow-md md:hidden z-50 ">
         <button
           onClick={handleReservar}

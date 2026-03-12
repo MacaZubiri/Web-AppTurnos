@@ -1,4 +1,3 @@
-// CrearEditarProfesional.jsx
 import { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,7 +7,7 @@ import { ProfContext } from "../context/ProfContext";
 import * as z from "zod";
 import { SwalSuccess, SwalError } from "../utils/swal";
 
-// 🔹 Schema interno
+
 const schemaProfesional = z.object({
   nombre: z.string().min(2, "El nombre es obligatorio"),
   especialidad: z.string().min(2, "La especialidad es obligatoria"),
@@ -33,7 +32,7 @@ const schemaProfesional = z.object({
   )
 });
 
-// Opciones de días
+
 const diasSemanaOptions = [
   { value: 1, label: "Lunes" },
   { value: 2, label: "Martes" },
@@ -124,32 +123,32 @@ const CrearEditarProfesional = () => {
   };
 
   return (
-    <div className="bg-gray-100 max-w-4/6 mx-auto pt-24 px-8 h-auto pb-10">
+    <div className="bg-white max-w-4/6 mx-auto pt-24 px-16 h-auto pb-10">
       <h1 className="text-2xl font-bold mb-6">{id ? "Editar Profesional" : "Crear Profesional"}</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
-        {/* Nombre */}
+        
         <div>
           <label>Nombre y Apellido</label>
           <input {...register("nombre")} className="w-full border p-2 rounded"/>
           {errors.nombre && <p className="text-red-500">{errors.nombre.message}</p>}
         </div>
 
-        {/* Especialidad */}
+        
         <div>
           <label>Especialidad</label>
           <input {...register("especialidad")} className="w-full border p-2 rounded"/>
           {errors.especialidad && <p className="text-red-500">{errors.especialidad.message}</p>}
         </div>
 
-         {/* Sobre mi */}
+         
         <div>
           <label>Sobre mí...</label>
           <textarea {...register("sobreMi")} className="w-full border p-2 rounded " rows={8} />
           {errors.sobreMi && <p className="text-red-500">{errors.sobreMi.message}</p>}
         </div>
 
-        {/* Email y Teléfono */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label>Email</label>
@@ -162,7 +161,7 @@ const CrearEditarProfesional = () => {
           </div>
         </div>
          
-         {/*Imagen */}
+         
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label>Imagen (URL)</label>
@@ -171,7 +170,7 @@ const CrearEditarProfesional = () => {
           </div>
         </div>
 
-        {/* Formación */}
+        
         <div>
           <label>Formación</label>
           {formacion.map((f, i) => (
@@ -189,7 +188,7 @@ const CrearEditarProfesional = () => {
            type="button" onClick={() => setValue("formacion", [...formacion, ""])}>Agregar formación</button>
         </div>
 
-        {/* Obras Sociales */}
+        
         <div>
           <label>Obras Sociales</label>
           {obrasSociales.map((o,i) => (
@@ -201,7 +200,7 @@ const CrearEditarProfesional = () => {
           <button className="bg-green-600 px-2 py-1 rounded-sm text-white cursor-pointer shadow-sm" type="button" onClick={() => setValue("obrasSociales", [...obrasSociales, ""])}>Agregar obra social</button>
         </div>
 
-        {/* Duración y Rango de Meses */}
+        
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label>Duración de turno (minutos)</label>
@@ -225,7 +224,7 @@ const CrearEditarProfesional = () => {
           </div>
         </div>
 
-        {/* Disponibilidad */}
+        
         <div>
           <label className="font-semibold">Disponibilidad</label>
           {diasFields.map((dia, i) => (

@@ -13,7 +13,7 @@ const Home = () => {
       className="relative pt-24 px-4 h-[80vh] pb-10 sm:h-[85vh] bg-cover bg-center"
       style={{ backgroundImage: `url(${header})` }}
     >
-      {/* Overlay opcional para mejor contraste */}
+      
       <div className="absolute inset-0 bg-black/30"></div>
 
       <div className="relative max-w-4xl mx-auto text-center text-white pt-10">

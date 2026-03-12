@@ -8,7 +8,7 @@ const MisTurnos = () => {
   const { user } = useAuth();
   const [turnosUsuario, setTurnosUsuario] = useState([]);
 
-  // 🔹 Filtrar los turnos que corresponden al usuario logueado
+  // Filtrar de turnos del usuario
   useEffect(() => {
     if (!user || !prof) return;
 
@@ -22,7 +22,7 @@ const MisTurnos = () => {
     setTurnosUsuario(turnos || []);
   }, [user, prof]);
 
-  // 🔹 Cancelar turno
+  // Cancelar turno
   const cancelarTurno = async (turno) => {
     if (!user) return;
 
@@ -92,7 +92,7 @@ const MisTurnos = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {turnosUsuario.map((turno, index) => {
-          // 🔹 Parsear fecha
+          
           const fecha = new Date(turno.fecha);
           const opciones = { weekday: "long", day: "numeric", month: "long" };
           const fechaFormateada = fecha.toLocaleDateString("es-AR", opciones);

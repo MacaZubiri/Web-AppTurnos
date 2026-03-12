@@ -9,19 +9,19 @@ const LoginModal = ({ isOpen, onClose }) => {
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // 🔹 Estado para mostrar/ocultar contraseña
+  const [showPassword, setShowPassword] = useState(false); 
   const navigate = useNavigate();
   const closeRef = useRef(null);
-  const usuarioRef = useRef(null); // 🔹 Para el foco automático
+  const usuarioRef = useRef(null); 
 
-  // 🔹 Foco automático en input usuario cuando el modal se abre
+  
   useEffect(() => {
     if (isOpen) {
       usuarioRef.current?.focus();
     }
   }, [isOpen]);
 
-  // 🔹 Cerrar modal al hacer click fuera
+  
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (closeRef.current && !closeRef.current.contains(event.target)) {
@@ -34,32 +34,32 @@ const LoginModal = ({ isOpen, onClose }) => {
     };
   }, [onClose]);
 
-  if (!isOpen) return null; // no renderiza si no está abierto
+  if (!isOpen) return null; 
 
-  // 🔹 Manejar login
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     const success = login(usuario, password);
     if (success) {
-      onClose();        // cerrar modal si login exitoso
-      navigate("/");    // navegar después de cerrar
+      onClose();        
+      navigate("/");    
     } else {
       setError("Usuario o contraseña incorrectos");
     }
   };
 
   const handleRegister = () => {
-    onClose();            // cerrar el modal
-    navigate("/registro"); // redirige al registro
+    onClose();            
+    navigate("/registro"); 
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center z-50 pt-24">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div
-        className="bg-white rounded-lg w-11/12 max-w-md p-6 relative max-h-5/12 sm:max-h-9/12"
+        className="bg-white rounded-lg w-11/12 max-w-md p-6 relative max-h-[90vh] overflow-y-auto"
         ref={closeRef}
       >
-        {/* Botón cerrar */}
+        
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 cursor-pointer"
@@ -72,7 +72,7 @@ const LoginModal = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          {/* Usuario */}
+          
           <input
             ref={usuarioRef}
             type="text"
@@ -83,7 +83,7 @@ const LoginModal = ({ isOpen, onClose }) => {
             required
           />
 
-          {/* Contraseña con ojito */}
+          
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -102,7 +102,7 @@ const LoginModal = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          {/* Links secundarios */}
+          
           <div className="mt-4 flex flex-col gap-2 text-sm mb-4">
             <button
               type="button"
@@ -123,7 +123,7 @@ const LoginModal = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          {/* Botón Ingresar */}
+          
           <button
             type="submit"
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors cursor-pointer"

@@ -1,4 +1,3 @@
-// PanelAdmin.jsx
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useProf } from "../context/ProfContext";
@@ -14,7 +13,7 @@ const PanelAdmin = () => {
   const { prof, loading: loadingProf, eliminarProfesional } = useProf();
   const [isDesktop, setIsDesktop] = useState(true);
 
-  // Detectar si es desktop
+  
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth >= 768);
     handleResize();
@@ -40,7 +39,7 @@ const PanelAdmin = () => {
     );
   }
 
-  // Función para eliminar usuario con confirmación
+  //Eliminar usuario
   const handleEliminarUsuario = async (id) => {
     const result = await SwalWarning.fire({
       title: "¿Seguro que querés eliminar este usuario?",
@@ -63,7 +62,7 @@ const PanelAdmin = () => {
     });
   };
 
-  // Función para eliminar profesional
+  // Eliminar profesional
   const handleEliminarProfesional = async (id) => {
     const res = await SwalWarning.fire({
       title: "¿Seguro que querés eliminar este profesional?",
@@ -85,22 +84,22 @@ const PanelAdmin = () => {
     });
   };
 
-  // Abrir página para editar profesional
+  // Editar profesional
   const handleEditarProfesional = (id) => {
     navigate(`/profesionales/editar/${id}`);
   };
 
-  // Abrir página para crear profesional
+  // Crear profesional
   const handleCrearProfesional = () => {
     navigate(`/profesionales/crear`);
   };
 
-  // Abrir página para editar usuario
+  // Editar usuario
   const handleEditarUsuario = (id) => {
     navigate(`/usuarios/editar/${id}`);
   };
 
-  // Abrir página para crear usuario
+  // Crear usuario
   const handleCrearUsuario = () => {
     navigate(`/usuarios/crear`);
   };
@@ -108,10 +107,18 @@ const PanelAdmin = () => {
   return (
     <div className="p-8 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Panel Administrador</h1>
+      <div className="flex space-x-4 p-4 mb-10">
+          <a href="#usuarios" className="text-white hover:bg-blue-800 bg-blue-500 py-2 px-3 rounded-md">
+            Ir a Usuarios
+          </a>
+          <a href="#profesionales" className="text-white hover:bg-blue-800 bg-blue-500 py-2 px-3 rounded-md">
+            Ir a Profesionales
+          </a>
+        </div>
 
-      {/* Usuarios */}
-      <section className="mb-10 text-center w-full">
-        <div className="bg-amber-50 w-full p-10 rounded-2xl shadow-gray-400 h-auto">
+      
+      <section id="usuarios" className="mb-10 text-center w-full">
+        <div className="bg-white w-full p-10 rounded-2xl shadow-gray-400 h-auto">
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 justify-center">
             Usuarios
           </h2>
@@ -125,7 +132,7 @@ const PanelAdmin = () => {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
-              <thead className="bg-gray-100">
+              <thead className="bg-white">
                 <tr>
                   <th className="border p-2">ID</th>
                   <th className="border p-2">Nombre</th>
@@ -138,7 +145,7 @@ const PanelAdmin = () => {
               </thead>
               <tbody>
                 {usuarios.map((u) => (
-                  <tr key={u.id} className="hover:bg-gray-50">
+                  <tr key={u.id} className="hover:bg-gray-100">
                     <td className="border p-2">{u.id}</td>
                     <td className="border p-2">{u.nombreApellido}</td>
                     <td className="border p-2">{u.usuario}</td>
@@ -171,9 +178,9 @@ const PanelAdmin = () => {
         </div>
       </section>
 
-      {/* Profesionales */}
-      <section>
-        <div className="bg-amber-50 w-full p-10 rounded-2xl shadow-gray-400 h-auto">
+      
+      <section id="profesionales">
+        <div className="bg-white w-full p-10 rounded-2xl shadow-gray-400 h-auto">
           <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 justify-center">
             Profesionales
           </h2>
@@ -187,7 +194,7 @@ const PanelAdmin = () => {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
-              <thead className="bg-gray-100">
+              <thead className="bg-white">
                 <tr>
                   <th className="border p-2">ID</th>
                   <th className="border p-2">Nombre</th>
@@ -198,7 +205,7 @@ const PanelAdmin = () => {
               </thead>
               <tbody>
                 {prof?.map((p) => (
-                  <tr key={p.id} className="hover:bg-gray-50">
+                  <tr key={p.id} className="hover:bg-gray-100">
                     <td className="border p-2">{p.id}</td>
                     <td className="border p-2">{p.nombre}</td>
                     <td className="border p-2">{p.especialidad}</td>

@@ -34,15 +34,11 @@ const NavBar = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  // Para debugear que el usuario tenga role admin
-  // console.log("Usuario logueado en NavBar:", user);
-
   return (
     <>
       <nav className="bg-white shadow-sm fixed top-0 left-0 w-full z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-screen-2xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
 
-          {/* Logo */}
           <div
             className="flex items-center cursor-pointer"
             onClick={() => navigate("/")}
@@ -50,7 +46,7 @@ const NavBar = () => {
             <img src={logo} alt="Logo" className="sm:h-10 h-8" />
           </div>
 
-          {/* Links Desktop */}
+          
           <div className="hidden sm:flex flex-1 justify-center gap-8">
             <Link
               to="/"
@@ -65,7 +61,7 @@ const NavBar = () => {
               Profesionales
             </Link>
 
-            {/* Panel Admin solo visible en desktop si es admin */}
+            
             {user && user.role === "admin" && (
               <Link
                 to="/admin"
@@ -76,10 +72,10 @@ const NavBar = () => {
             )}
           </div>
 
-          {/* Right Side */}
+          
           <div className="flex items-center gap-3">
 
-            {/* Desktop: Usuario / Login */}
+            
             <div className="hidden sm:flex items-center gap-2 relative" ref={menuRef}>
               {user ? (
                 <div
@@ -138,7 +134,7 @@ const NavBar = () => {
               )}
             </div>
 
-            {/* Mobile: Nombre + Hamburger */}
+            
             <div className="flex items-center gap-2 sm:hidden relative" ref={hamburgerRef}>
               {user && (
                 <p className="text-sm font-medium truncate">{user.nombreApellido}</p>
@@ -176,7 +172,7 @@ const NavBar = () => {
                         Mis turnos
                       </button>
 
-                      {/* Panel Admin solo en mobile */}
+                      
                       {user.role === "admin" && (
                         <button
                           onClick={() => {
@@ -217,7 +213,7 @@ const NavBar = () => {
         </div>
       </nav>
 
-      {/* Modal Login */}
+      
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </>
   );

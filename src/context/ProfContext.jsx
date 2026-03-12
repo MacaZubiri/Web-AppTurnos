@@ -8,7 +8,7 @@ export const ProfProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 🔹 Traer profesionales
+  
   useEffect(() => {
     const fetchProfesionales = async () => {
       try {
@@ -25,7 +25,7 @@ export const ProfProvider = ({ children }) => {
     fetchProfesionales();
   }, []);
 
-  // 🔹 Crear profesional
+  
   const registrarProfesionales = async (profData) => {
     setLoading(true);
     setError(null);
@@ -47,7 +47,7 @@ export const ProfProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Editar profesional
+  
   const editarProfesional = async (id, updatedData) => {
     setLoading(true);
     setError(null);
@@ -70,7 +70,7 @@ export const ProfProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Guardar turnos
+  
   const guardarTurno = async (profId, turno, reemplazar = false) => {
   const profActual = prof.find(p => p.id === profId.toString());
   if (!profActual) throw new Error("Profesional no encontrado");
@@ -78,10 +78,8 @@ export const ProfProvider = ({ children }) => {
   let updatedTurnos;
 
   if (reemplazar) {
-    // Si reemplazamos, simplemente usamos el turno que llega
     updatedTurnos = turno;
   } else {
-    // Filtramos turnos existentes para evitar duplicados
     const turnosSinDuplicados = profActual.turnos.filter(
       t =>
         !(
@@ -93,7 +91,6 @@ export const ProfProvider = ({ children }) => {
     updatedTurnos = [...turnosSinDuplicados, turno];
   }
 
-  // Guardamos en el backend
   const res = await fetch(`${API_URL_PROF}/${profId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -110,7 +107,6 @@ export const ProfProvider = ({ children }) => {
   return updatedProf;
 };
 
-  // 🔹 Eliminar profesional
   const eliminarProfesional = async (id) => {
     try {
       await fetch(`${API_URL_PROF}/${id}`, { method: "DELETE" });

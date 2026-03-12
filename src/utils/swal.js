@@ -1,4 +1,3 @@
-// src/utils/swal.js
 import Swal from "sweetalert2";
 
 export const SwalError = Swal.mixin({
@@ -9,10 +8,12 @@ export const SwalError = Swal.mixin({
     actions: "flex flex-col sm:flex-row gap-3 mt-4",
     confirmButton:
       "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded cursor-pointer w-full sm:w-auto",
+
   },
   buttonsStyling: false,
   confirmButtonText: "Aceptar",
    iconColor: "#dc2626",
+    scrollbarPadding: false,
 });
 
 export const SwalSuccess = Swal.mixin({
@@ -26,7 +27,8 @@ export const SwalSuccess = Swal.mixin({
   },
   buttonsStyling: false,
   confirmButtonText: "Aceptar",
-  iconColor: "#16a34a"
+  iconColor: "#16a34a",
+  scrollbarPadding: false,
 });
 
 export const SwalWarning = Swal.mixin({
@@ -43,5 +45,6 @@ export const SwalWarning = Swal.mixin({
   buttonsStyling: false,
   confirmButtonText: "Confirmar",
   cancelButtonText: "Cancelar",
-  iconColor: "#ca8a04"
+  iconColor: "#ca8a04",
+   scrollbarPadding: false,
 });
