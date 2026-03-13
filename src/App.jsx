@@ -15,12 +15,14 @@ import PanelAdmin from "./pages/PanelAdmin";
 import CrearEditarProfesional from "./pages/CrearEditarProfesional"; 
 import CrearEditarUsuario from "./pages/CrearEditarUsuario";
 import Footer from "./components/Footer"
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
     <ProfProvider>
       <AuthProvider>
         <BrowserRouter>
+        <Analytics/>
           <NavBar />
           <Routes>
             {/* Rutas públicas */}
