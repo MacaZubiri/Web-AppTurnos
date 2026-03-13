@@ -3,9 +3,9 @@
 Aplicación web para gestionar turnos médicos. Permite a los usuarios registrarse, consultar profesionales, reservar turnos y gestionarlos desde su perfil personal. También incluye un panel administrativo para crear, editar y eliminar usuarios y profesionales.
 
 ## 🌐 Demo en vivo
-Probá la app en Vercel: [https://web-appturnosconsultorio.vercel.app/](https://web-appturnosconsultorio.vercel.app/)
+Probá la demo: [https://web-appturnosconsultorio.vercel.app/](https://web-appturnosconsultorio.vercel.app/)
 
-## Características principales
+## Funciones principales:
 ### Para usuarios:
 - Registro y login de usuarios
 - Visualización de un listado de profesionales con información detallada
@@ -13,7 +13,7 @@ Probá la app en Vercel: [https://web-appturnosconsultorio.vercel.app/](https://
 - Ver y cancelar turnos desde el perfil personal
 
 ### Para administradores:
-- Panel administrativo para gestionar la plataforma
+- Panel administrativo para gestionar usuarios y profesionales
 - Crear, editar y eliminar usuarios y profesionales
 
 ## 🛠 Tecnologías y librerías usadas
@@ -68,6 +68,8 @@ npm run dev
 #### Usuario normal:
 - Se pueden registrar libremente con cualquier email y contraseña para probar las funcionalidades de usuario.
 
+---
+> [!WARNING]
+>Estos datos son sólo para propósitos de prueba y no están conectados a ningún sistema real.Recordá no utilizar datos reales.**
 
-⚠️ **Advertencia: Estos datos son solo para propósitos de prueba y no están conectados a ningún sistema real.Recordá no utilizar datos reales.**
 
