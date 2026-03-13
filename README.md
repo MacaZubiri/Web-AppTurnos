@@ -70,6 +70,6 @@ npm run dev
 
 ---
 > [!WARNING]
->Estos datos son sólo para propósitos de prueba y no están conectados a ningún sistema real.Recordá no utilizar datos reales.**
+>Estos datos son sólo para propósitos de prueba y no están conectados a ningún sistema real.Recordá no utilizar datos reales.
 
 
